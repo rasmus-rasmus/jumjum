@@ -1,6 +1,8 @@
 #include "linesegment.hpp"
 
-#include <glm/vec2.hpp>
+#include <glm/geometric.hpp>
+
+#include <iostream>
 
 
 enum Orientation
@@ -12,8 +14,9 @@ enum Orientation
 
 Orientation getOrientation(const Point& point, const LineSegment& line)
 {
-    glm::dvec2 lineDir{line.m_endPoint.x() - line.m_startPoint.x(), line.m_endPoint.y() - line.m_startPoint.y()};
-    glm::dvec2 startPointToPoint{point.x() - line.m_startPoint.x(), point.y() - line.m_startPoint.y()};
+    // std::cout << "Testing getOrientation with point: " << point << " and line: " << line.getStartPoint() << " -> " << line.getEndPoint() << std::endl;
+    glm::dvec2 lineDir = line.getDirection();
+    glm::dvec2 startPointToPoint{point.x() - line.getStartPoint().x(), point.y() - line.getStartPoint().y()};
 
     double determinant = lineDir.x * startPointToPoint.y - lineDir.y * startPointToPoint.x;
 
@@ -23,6 +26,13 @@ Orientation getOrientation(const Point& point, const LineSegment& line)
     }
 
     return determinant > 0 ? Orientation::Left : Orientation::Right;
+}
+
+glm::dvec2 LineSegment::getDirection() const
+{
+    glm::dvec2 unNormalizedDir(m_endPoint.x() - m_startPoint.x(), m_endPoint.y() - m_startPoint.y());
+
+    return glm::normalize(unNormalizedDir);
 }
 
 // bool LineSegment::intersects(const LineSegment& otherLine, Point& intersectionPoint)

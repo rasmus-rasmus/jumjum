@@ -1,6 +1,8 @@
 #ifndef POINT_HPP_INCLUDED
 #define POINT_HPP_INCLUDED
 
+#include <ostream>
+
 struct Point
 {
     Point() : m_x(0.), m_y(0.) {}
@@ -17,13 +19,7 @@ struct Point
 };
 
 bool operator<(const Point& lhs, const Point& rhs);
-// {
-//     if (lhs.y() < rhs.y())
-//     {
-//         return true;
-//     }
 
-//     return lhs.x() < rhs.x();
-// }
+std::ostream& operator<<(std::ostream& ost, const Point& point);
 
 #endif

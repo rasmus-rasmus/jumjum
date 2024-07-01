@@ -4,6 +4,7 @@
 #include "point.hpp"
 
 #include <stdexcept>
+#include <glm/vec2.hpp>
 
 struct LineSegment
 {
@@ -18,8 +19,14 @@ struct LineSegment
          m_endPoint = endPoint;
     }
 
+    Point getStartPoint() const { return m_startPoint; }
+    Point getEndPoint() const { return m_endPoint; }
+
+    glm::dvec2 getDirection() const;
+
     bool intersects(const LineSegment& otherLine, Point& intersectionPoint);
 
+private:
     Point m_startPoint;
     Point m_endPoint;
 };

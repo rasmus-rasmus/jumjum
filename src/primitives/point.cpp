@@ -2,8 +2,6 @@
 
 #include <cmath>
 
-
-
 double Point::squareDistance(const Point& otherPoint) const
 {
     double deltaX = m_x - otherPoint.x();
@@ -25,4 +23,9 @@ bool operator<(const Point& lhs, const Point& rhs)
     }
 
     return lhs.x() < rhs.x();
+}
+
+std::ostream& operator<<(std::ostream& ost, const Point& point)
+{
+    return ost << "Point: [" << point.x() << ", " << point.y() << "]";
 }
