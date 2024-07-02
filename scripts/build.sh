@@ -1,7 +1,9 @@
-if [ ! -d build ]; then
+if [ ! -d build ] 
+then
     mkdir build; 
     cd build;
     cmake ..;
+else
+    cd build;
 fi
-cd build
 cmake --build .
