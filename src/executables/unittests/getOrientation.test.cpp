@@ -14,6 +14,7 @@ TEST_CASE("getOrientation")
         Simple test. Buid some lines with start points in every quadrant with end points in eight equi-distributed directions from start points.
         Then take test points in a 3x5 grid around the line (with 3 interior points of grid lying on the line) and test their orientation.
     */
+   
     glm::dvec2 deltaVec(1., 0.);
 
     for (int i = 0; i < 8; ++i)

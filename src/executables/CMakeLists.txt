@@ -8,7 +8,8 @@ target_include_directories(playground PUBLIC
 ########## TEST ##########
 
 set(UNIT_TEST_SOURCES
-    unittests/getOrientation.test.cpp)
+    unittests/getOrientation.test.cpp
+    unittests/linesegment.test.cpp)
 
 add_executable(test test.cpp ${UNIT_TEST_SOURCES})
 

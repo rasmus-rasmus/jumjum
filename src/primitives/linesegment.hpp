@@ -24,7 +24,7 @@ struct LineSegment
 
     glm::dvec2 getDirection() const;
 
-    bool intersects(const LineSegment& otherLine, Point& intersectionPoint);
+    bool intersects(const LineSegment& otherLine);
 
 private:
     Point m_startPoint;

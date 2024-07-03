@@ -12,9 +12,22 @@ enum Orientation
     Right,
 };
 
+bool areIntervalsOverlapping(std::pair<double, double> firstInterval, std::pair<double, double> secondInterval)
+{
+    // First ensure that first < second for both intervals, 
+    // then ensure that firstInterval is "to the left" of rightInterval.
+    if (firstInterval.first > firstInterval.second) std::swap(firstInterval.first, firstInterval.second);
+    if (secondInterval.first > secondInterval.second) std::swap(secondInterval.first, secondInterval.second);
+    if (firstInterval.first > secondInterval.first)
+    {
+        std::swap(firstInterval, secondInterval);
+    }
+
+    return firstInterval.second >= secondInterval.first && firstInterval.first <= secondInterval.second;
+}
+
 Orientation getOrientation(const Point& point, const LineSegment& line)
 {
-    // std::cout << "Testing getOrientation with point: " << point << " and line: " << line.getStartPoint() << " -> " << line.getEndPoint() << std::endl;
     glm::dvec2 lineDir = line.getDirection();
     glm::dvec2 startPointToPoint{point.x() - line.getStartPoint().x(), point.y() - line.getStartPoint().y()};
 
@@ -35,7 +48,19 @@ glm::dvec2 LineSegment::getDirection() const
     return glm::normalize(unNormalizedDir);
 }
 
-// bool LineSegment::intersects(const LineSegment& otherLine, Point& intersectionPoint)
-// {
+bool LineSegment::intersects(const LineSegment& otherLine)
+{
+    if (getOrientation(otherLine.getStartPoint(), *this) == Orientation::On && getOrientation(otherLine.getEndPoint(), *this) == Orientation::On)
+    {
+        // Colinear lines; intersect iff they overlap
+        if (std::abs(m_startPoint.x() - m_endPoint.x()) < 1e-6)
+        {
+            return areIntervalsOverlapping({m_startPoint.y(), m_endPoint.y()}, {otherLine.getStartPoint().y(), otherLine.getEndPoint().y()});
+        }
 
-// }
+        return areIntervalsOverlapping({m_startPoint.x(), m_endPoint.x()}, {otherLine.getStartPoint().x(), otherLine.getEndPoint().x()});
+    }
+
+    return getOrientation(m_startPoint, otherLine) * getOrientation(m_endPoint, otherLine) <= 0
+           && getOrientation(otherLine.getStartPoint(), *this) * getOrientation(otherLine.getEndPoint(), *this) <= 0;
+}
