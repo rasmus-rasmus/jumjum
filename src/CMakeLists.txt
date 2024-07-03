@@ -2,6 +2,12 @@ set(PRIMITIVES_SOURCE_FILES
         primitives/point.cpp
         primitives/linesegment.cpp)
 
-add_library(jumjum-geom ${PRIMITIVES_SOURCE_FILES})
+set(ALGORITHMS_SOURCE_FILES
+        algorithms/planesweep/events.cpp)
+
+add_library(jumjum-geom ${PRIMITIVES_SOURCE_FILES}
+                        ${ALGORITHMS_SOURCE_FILES})
+
+target_include_directories(jumjum-geom PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 add_subdirectory(executables)

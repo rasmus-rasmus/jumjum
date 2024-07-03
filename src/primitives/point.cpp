@@ -1,4 +1,4 @@
-#include "point.hpp"
+#include "primitives/point.hpp"
 
 #include <cmath>
 
@@ -12,7 +12,7 @@ double Point::squareDistance(const Point& otherPoint) const
 
 double Point::distance(const Point& otherPoint) const
 {
-    return std::sqrt(this->squareDistance(otherPoint));
+    return std::sqrt(squareDistance(otherPoint));
 }
 
 bool operator<(const Point& lhs, const Point& rhs)

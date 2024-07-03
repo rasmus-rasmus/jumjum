@@ -1,4 +1,4 @@
-#include "linesegment.hpp"
+#include "primitives/linesegment.hpp"
 
 #include <glm/geometric.hpp>
 
@@ -33,12 +33,23 @@ Orientation getOrientation(const Point& point, const LineSegment& line)
 
     double determinant = lineDir.x * startPointToPoint.y - lineDir.y * startPointToPoint.x;
 
-    if (std::abs(determinant) < 1e-8)
+    if (std::abs(determinant) < 1e-6)
     {
         return Orientation::On;
     }
 
     return determinant > 0 ? Orientation::Left : Orientation::Right;
+}
+
+LineSegment::LineSegment(const Point& startPoint, const Point& endPoint)
+{
+    if (startPoint.squareDistance(endPoint) < 1e-6)
+    {
+        throw std::logic_error("Degenerate line segment.");
+    }
+
+        m_startPoint = startPoint;
+        m_endPoint = endPoint;
 }
 
 glm::dvec2 LineSegment::getDirection() const

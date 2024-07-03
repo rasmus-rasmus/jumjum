@@ -1,23 +1,21 @@
-#ifndef LINE_HPP_INCLUDED
-#define LINE_HPP_INCLUDED
+#ifndef LINE_SEGMENT_HPP_INCLUDED
+#define LINE_SEGMENT_HPP_INCLUDED
 
 #include "point.hpp"
 
 #include <stdexcept>
 #include <glm/vec2.hpp>
 
+
 struct LineSegment
 {
-    LineSegment(const Point& startPoint, const Point& endPoint)
+    LineSegment()
     {
-        if (startPoint.squareDistance(endPoint) < 1e-6)
-        {
-            throw std::logic_error("Degenerate line segment.");
-        }
-
-         m_startPoint = startPoint;
-         m_endPoint = endPoint;
+        m_startPoint = Point();
+        m_endPoint = Point(1., 0.);
     }
+
+    LineSegment(const Point& startPoint, const Point& endPoint);
 
     Point getStartPoint() const { return m_startPoint; }
     Point getEndPoint() const { return m_endPoint; }
