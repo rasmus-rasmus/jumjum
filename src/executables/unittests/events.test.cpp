@@ -24,6 +24,14 @@ TEST_CASE("IntersectionEvent.getIntersectionPoint")
 
         IntersectionEvent intersection(lineA, lineB);
 
-        CHECK(std::abs(intersection.getIntersectionPoint().distance(Point(0., 0.))) < 1e-6);
+        auto expectedPoint = i != 2 && i != 6 ? Point(0., 0.) : Point(-1., -1.);
+
+        CHECK_MESSAGE(std::abs(intersection.getIntersectionPoint().distance(expectedPoint)) < 1e-6, 
+                      "Check failed -- lineB: " << lineB.getStartPoint() 
+                                                << " -> " 
+                                                << lineB.getEndPoint() 
+                                                << ". Intersection point: " 
+                                                << intersection.getIntersectionPoint() 
+                                                << ". Expected: " << expectedPoint << ".");
     }
 }

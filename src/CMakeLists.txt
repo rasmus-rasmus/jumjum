@@ -5,8 +5,12 @@ set(PRIMITIVES_SOURCE_FILES
 set(ALGORITHMS_SOURCE_FILES
         algorithms/planesweep/events.cpp)
 
+set(UTILITY_SOURCE_FILES
+        utility/geomutils.cpp)
+
 add_library(jumjum-geom ${PRIMITIVES_SOURCE_FILES}
-                        ${ALGORITHMS_SOURCE_FILES})
+                        ${ALGORITHMS_SOURCE_FILES}
+                        ${UTILITY_SOURCE_FILES})
 
 target_include_directories(jumjum-geom PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
