@@ -19,8 +19,10 @@ struct LineSegment
 
     Point getStartPoint() const { return m_startPoint; }
     Point getEndPoint() const { return m_endPoint; }
-
     glm::dvec2 getDirection() const;
+
+    bool isVertical(double angularTol = 1e-5) const;
+    bool isHorizontal(double angularTol = 1e-5) const;
 
     bool intersects(const LineSegment& otherLine);
 

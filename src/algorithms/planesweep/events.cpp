@@ -8,32 +8,40 @@ IntersectionEvent::IntersectionEvent(LineSegment line, LineSegment otherLine)
         throw std::logic_error("Trying to create intersection event with non-intersecting lines.");
     }
 
-    firstLine = line;
-    secondLine = otherLine;
+    m_firstLine = line;
+    m_secondLine = otherLine;
 }
 
 Point IntersectionEvent::getIntersectionPoint()
 {
-    if (m_intersectionPoint)
+    if (m_intersectionPoint.has_value())
     {
         return *m_intersectionPoint;
     }
+    if (m_firstLine.isVertical() || m_secondLine.isVertical())
+    {
+        // TODO: Handle vertical lines 
+        return Point(666.,666.);
+    }
 
-    // TODO: Handle vertical lines 
+    double slopeFirstLine = (m_firstLine.getEndPoint().y() - m_firstLine.getStartPoint().y()) / (m_firstLine.getEndPoint().x() - m_firstLine.getStartPoint().x());
+    double interceptFirstLine = m_firstLine.getStartPoint().y() - slopeFirstLine * m_firstLine.getStartPoint().x();
 
-    double slopeFirstLine = (firstLine.getEndPoint().y() - firstLine.getStartPoint().y()) / (firstLine.getEndPoint().x() - firstLine.getStartPoint().x());
-    double interceptFirstLine = firstLine.getStartPoint().y() - slopeFirstLine * firstLine.getStartPoint().x();
+    double slopeSecondLine = (m_secondLine.getEndPoint().y() - m_secondLine.getStartPoint().y()) / (m_secondLine.getEndPoint().x() - m_secondLine.getStartPoint().x());
+    double interceptSecondLine = m_secondLine.getStartPoint().y() - slopeSecondLine * m_secondLine.getStartPoint().x();
 
-    double slopeSecondLine = (secondLine.getEndPoint().y() - secondLine.getStartPoint().y()) / (secondLine.getEndPoint().x() - secondLine.getStartPoint().x());
-    double interceptSecondLine = secondLine.getStartPoint().y() - slopeSecondLine * secondLine.getStartPoint().x();
+    if (std::abs(slopeFirstLine - slopeSecondLine) < 1e-6)
+    {
+        // TODO: Handle parallel, i. e., colinear, lines
+        return Point(666.,666.);
+    }
 
-    // TODO: Handle parallel, i. e., colinear, lines
 
     double intersectionXVal = (interceptSecondLine - interceptFirstLine) / (slopeFirstLine - slopeSecondLine);
     double intersectionYVal = slopeFirstLine * intersectionXVal + interceptFirstLine;
 
     Point interSectionPoint(intersectionXVal, intersectionYVal);
-    m_intersectionPoint = &interSectionPoint;
+    m_intersectionPoint = interSectionPoint;
 
     return interSectionPoint;
 }

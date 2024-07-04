@@ -1,6 +1,8 @@
 #ifndef EVENTS_HPP_INCLUDED
 #define EVENTS_HPP_INCLUDED
 
+#include <optional>
+
 #include "primitives/linesegment.hpp"
 
 struct IntersectionEvent
@@ -11,13 +13,15 @@ struct IntersectionEvent
     IntersectionEvent& operator=(const IntersectionEvent& ref) = delete;
     IntersectionEvent& operator=(IntersectionEvent&& ref) = delete;
 
-    LineSegment firstLine;
-    LineSegment secondLine;
+    LineSegment getFirstLine() const { return m_firstLine; }
+    LineSegment getSecondLine() const { return m_secondLine; }
 
     Point getIntersectionPoint();
 
 private:
-    Point* m_intersectionPoint = nullptr;
+    LineSegment m_firstLine;
+    LineSegment m_secondLine;
+    std::optional<Point> m_intersectionPoint = std::nullopt;
 };
 
 #endif
