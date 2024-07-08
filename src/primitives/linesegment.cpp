@@ -59,19 +59,7 @@ glm::dvec2 LineSegment::getDirection() const
     return glm::normalize(unNormalizedDir);
 }
 
-bool LineSegment::isVertical(double angularTol) const
-{
-    auto dir = getDirection();
-
-    return std::acos(std::min(1., std::abs(glm::dot(dir, glm::dvec2(0., 1.))))) < angularTol;
-}
-
-bool LineSegment::isHorizontal(double angularTol) const
-{
-    auto dir = getDirection();
-
-    return std::acos(std::min(1., std::abs(glm::dot(dir, glm::dvec2(1., 0.))))) < angularTol;
-}
+double LineSegment::length() { return m_startPoint.distance(m_endPoint); }
 
 bool LineSegment::intersects(const LineSegment& otherLine)
 {
