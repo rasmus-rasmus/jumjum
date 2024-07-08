@@ -24,7 +24,8 @@ LineLineIntersection IntersectionEvent::getIntersection()
     }
 
     glm::dvec2 startPointToOrigo(-m_firstLine->getStartPoint().x(), -m_firstLine->getStartPoint().y());
-    double angleFirstLineWithXAxis = std::acos(glm::dot(m_firstLine->getDirection(), glm::dvec2(1., 0.)));
+    auto firstLineDir = m_firstLine->getDirection();
+    double angleFirstLineWithXAxis = std::atan2(firstLineDir.y, firstLineDir.x);
     
     auto transformToFirstLineCoords = [startPointToOrigo, angleFirstLineWithXAxis] (glm::dvec2 vecToTransform)
     {

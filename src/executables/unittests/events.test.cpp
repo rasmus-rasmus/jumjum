@@ -6,26 +6,8 @@
 
 TEST_CASE("IntersectionEvent.getIntersectionPoint")
 {
-    glm::dvec2 startVecA(-1., -1.);
-    glm::dvec2 endVecA(1., 1.);
-    glm::dvec2 startVecB(-1., 1.);
-    glm::dvec2 endVecB(1., -1.);
-
-    for (int i = 0; i < 8; ++i)
+    auto performCheck = [] (int i, LineSegment lineA, LineSegment lineB)
     {
-        double rotationAngle = i * 2 * M_PI / 8;
-        glm::dmat2 rotationMat(cos(rotationAngle), sin(rotationAngle), -sin(rotationAngle), cos(rotationAngle));
-
-        glm::dvec2 startPointB = rotationMat * startVecB;
-        glm::dvec2 endPointB = rotationMat * endVecB;
-        Point lineAStartPoint(startVecA.x, startVecA.y);
-        Point lineAEndPoint(endVecA.x, endVecA.y);
-        Point lineBStartPoint(startPointB.x, startPointB.y);
-        Point lineBEndPoint(endPointB.x, endPointB.y);
-
-        LineSegment lineA(lineAStartPoint, lineAEndPoint);
-        LineSegment lineB(lineBStartPoint, lineBEndPoint);
-
         IntersectionEvent intersection(&lineA, &lineB);
 
         auto expectedPoint = Point(0., 0.);
@@ -58,6 +40,26 @@ TEST_CASE("IntersectionEvent.getIntersectionPoint")
                                                             << intersectionLine.getEndPoint()
                                                             << ". Expected: " << lineA.getEndPoint() << ".");
         }
+    };
 
+    glm::dvec2 startVecA(-1., -1.);
+    glm::dvec2 endVecA(1., 1.);
+    glm::dvec2 startVecB(-1., 1.);
+    glm::dvec2 endVecB(1., -1.);
+
+    for (int i = 0; i < 8; ++i)
+    {
+        double rotationAngle = i * 2 * M_PI / 8;
+        glm::dmat2 rotationMat(cos(rotationAngle), sin(rotationAngle), -sin(rotationAngle), cos(rotationAngle));
+
+        glm::dvec2 startPointB = rotationMat * startVecB;
+        glm::dvec2 endPointB = rotationMat * endVecB;
+
+        LineSegment lineA(Point(startVecA.x, startVecA.y), Point(endVecA.x, endVecA.y));
+        LineSegment lineB(Point(startPointB.x, startPointB.y), Point(endPointB.x, endPointB.y));
+
+        // Test both orders to test that result is not order dependent
+        performCheck(i, lineA, lineB);
+        performCheck(i, lineB, lineA);
     }
 }
