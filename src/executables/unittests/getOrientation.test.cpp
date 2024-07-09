@@ -29,7 +29,7 @@ TEST_CASE("getOrientation")
             glm::dmat2 endPointRotationMat(cos(endPointRotationAngle), sin(endPointRotationAngle), -sin(endPointRotationAngle), cos(endPointRotationAngle));
             glm::dvec2 endPoint = startPoint + endPointRotationMat * deltaVec;
             
-            LineSegment testLine(Point(startPoint.x, startPoint.y), Point(endPoint.x, endPoint.y));
+            primitives::LineSegment testLine(primitives::Point(startPoint.x, startPoint.y), primitives::Point(endPoint.x, endPoint.y));
             auto lineDir = testLine.getDirection();
             glm::dvec2 lineDirPerp(-lineDir.y, lineDir.x);
             
@@ -38,7 +38,7 @@ TEST_CASE("getOrientation")
                 for (int lineDirPerpScalar : std::vector<int>{-1, 0, 1})
                 {
                     auto v = startPoint + lineDirScalar * lineDir + (double)lineDirPerpScalar * lineDirPerp;
-                    Point testPoint(v.x, v.y);
+                    primitives::Point testPoint(v.x, v.y);
                     auto orientation = getOrientation(testPoint, testLine);
 
                     CHECK(orientation == -lineDirPerpScalar);

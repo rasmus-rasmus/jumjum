@@ -4,8 +4,15 @@
 #include "point.hpp"
 
 #include <stdexcept>
+#include <variant>
 #include <glm/vec2.hpp>
 
+
+namespace primitives
+{
+
+struct LineSegment;
+using LineLineIntersection = std::variant<Point, LineSegment>;
 
 struct LineSegment
 {
@@ -25,9 +32,13 @@ struct LineSegment
 
     bool intersects(const LineSegment& otherLine);
 
+    LineLineIntersection computeIntersection(const LineSegment& otherLine);
+
 private:
     Point m_startPoint;
     Point m_endPoint;
 };
+
+} // namespace primitives
 
 #endif

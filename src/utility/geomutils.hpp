@@ -5,10 +5,16 @@
 
 #include "primitives/point.hpp"
 
+namespace utility
+{
+
+
 glm::dmat2 getRotationMatrix(double angle);
 
-glm::dvec2 toGLM(const Point& point);
+glm::dvec2 toGLM(const primitives::Point& point);
 
-Point toPoint(glm::dvec2 vec);
+primitives::Point toPoint(glm::dvec2 vec);
+
+} // namespace utility
 
 #endif

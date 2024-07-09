@@ -3,6 +3,9 @@
 
 #include <ostream>
 
+namespace primitives
+{
+
 struct Point
 {
     Point() : m_x(0.), m_y(0.) {}
@@ -21,5 +24,7 @@ struct Point
 bool operator<(const Point& lhs, const Point& rhs);
 
 std::ostream& operator<<(std::ostream& ost, const Point& point);
+
+} // namespace primitives
 
 #endif

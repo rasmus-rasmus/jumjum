@@ -2,6 +2,10 @@
 
 #include <cmath>
 
+namespace primitives
+{
+
+
 double Point::squareDistance(const Point& otherPoint) const
 {
     double deltaX = m_x - otherPoint.x();
@@ -29,3 +33,5 @@ std::ostream& operator<<(std::ostream& ost, const Point& point)
 {
     return ost << "Point: [" << point.x() << ", " << point.y() << "]";
 }
+
+} //namespace primitives
