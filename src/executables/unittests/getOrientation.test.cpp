@@ -1,10 +1,9 @@
-#include <iostream>
+#include "executables/doctest.h"
+
 #include <vector>
 #include <cmath>
-
 #include <glm/mat2x2.hpp>
 
-#include "../doctest.h"
 #include "primitives/linesegment.hpp"
 #include "primitives/linesegment.cpp"
 

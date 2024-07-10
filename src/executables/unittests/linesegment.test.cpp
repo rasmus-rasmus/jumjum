@@ -1,4 +1,4 @@
-#include "../doctest.h"
+#include "executables/doctest.h"
 
 #include <glm/vec2.hpp>
 #include <glm/mat2x2.hpp>

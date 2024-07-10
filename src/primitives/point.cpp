@@ -21,7 +21,7 @@ double Point::distance(const Point& otherPoint) const
 
 bool operator<(const Point& lhs, const Point& rhs)
 {
-    if (lhs.y() < rhs.y())
+    if (lhs.y() > rhs.y())
     {
         return true;
     }
