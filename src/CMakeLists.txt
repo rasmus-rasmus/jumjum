@@ -3,7 +3,8 @@ set(PRIMITIVES_SOURCE_FILES
         primitives/linesegment.cpp)
 
 set(ALGORITHMS_SOURCE_FILES
-        algorithms/planesweep/events.cpp)
+        algorithms/planesweep/events.cpp
+        algorithms/planesweep/planesweep.cpp)
 
 set(UTILITY_SOURCE_FILES
         utility/geomutils.cpp)
