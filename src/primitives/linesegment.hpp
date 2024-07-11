@@ -12,7 +12,7 @@ namespace primitives
 {
 
 struct LineSegment;
-using LineLineIntersection = std::variant<Point, LineSegment>;
+using LineLineIntersection = std::variant<std::monostate, Point, LineSegment>;
 
 struct LineSegment
 {

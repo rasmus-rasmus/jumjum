@@ -1,5 +1,9 @@
 #include "planesweep.hpp"
 
+#include <set>
+
+#include "algorithms/planesweep/events.hpp"
+
 namespace algorithms
 {
 
@@ -7,31 +11,37 @@ Planesweep::Planesweep(const std::vector<primitives::LineSegment>& lines)
 {
     for (auto line : lines)
     {
-        addLine(line);   
+        m_lines.push_back(line);   
     }
-}
+}   
 
-void Planesweep::addLine(const primitives::LineSegment& line)
-{
-    m_lines.push_back(line);
+// std::multimap<primitives::LineLineIntersection, LinePair> Planesweep::perform()
+// {
+//     std::set<Event> eventQueue;
+//     std::set<Event> statusLine;
+//     std::map<primitives::LineLineIntersection, LinePair> intersectionsOut;
 
-    // Insert EndPointEvent once for each end point with isUpper set resp not set. 
-    // The EndPointEvent will take care of returning the relevant end point for comparison
-    // based on whether it is upper or not.
-    m_eventQueue.insert(EndPointEvent(&m_lines.back(), true));
-    m_eventQueue.insert(EndPointEvent(&m_lines.back(), false));
+//     for (size_t i = 0; i < m_lines.size(); ++i)
+//     {
+//         auto linePtr = &m_lines[i];
 
-    m_isDone = false;
-}
+//         // Insert EndPointEvent once for each end point with isUpper set resp not set. 
+//         // The EndPointEvent will take care of returning the relevant end point for comparison
+//         // based on whether it is upper or not.
+//         eventQueue.insert(EndPointEvent(linePtr, true));
+//         eventQueue.insert(EndPointEvent(linePtr, false));
+//     }
 
-IntersectionEvent Planesweep::getIntersection(size_t idx) const
-{
-    if (idx >= intersectionCount())
-    {
-        throw std::logic_error("Intersection index out of range.");
-    }
+//     while (!eventQueue.empty())
+//     {
+//         auto nextEvent = eventQueue.begin();
 
-    return m_intersections[idx];
-}
+//         if (typeid(nextEvent) == typeid(IntersectionEvent))
+//         {
+    
+//             intersectionsOut[nextEvent->getIntersection()] = {nextEvent->getFirstLine(), nextEvent->getSecondLine()};
+//         }
+//     }
+// }
 
 } // namespace algorithms

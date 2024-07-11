@@ -84,9 +84,14 @@ bool LineSegment::intersects(const LineSegment& otherLine)
            && getOrientation(otherLine.getStartPoint(), *this) * getOrientation(otherLine.getEndPoint(), *this) <= 0;
 }
 
-    LineLineIntersection LineSegment::computeIntersection(const LineSegment& otherLine)
+LineLineIntersection LineSegment::computeIntersection(const LineSegment& otherLine)
+{
+    if (!this->intersects(otherLine))
     {
-        glm::dvec2 startPointToOrigo(-getStartPoint().x(), -getStartPoint().y());
+        return std::monostate{};
+    }
+
+    glm::dvec2 startPointToOrigo(-getStartPoint().x(), -getStartPoint().y());
     auto firstLineDir = getDirection();
     double angleFirstLineWithXAxis = std::atan2(firstLineDir.y, firstLineDir.x);
     
@@ -138,6 +143,6 @@ bool LineSegment::intersects(const LineSegment& otherLine)
     glm::dvec2 intersectionInGlobalCoords = transformBackToGlobalCoordinates(glm::dvec2(zeroX, 0.));
 
     return utility::toPoint(intersectionInGlobalCoords);
-    }
+}
 
 }

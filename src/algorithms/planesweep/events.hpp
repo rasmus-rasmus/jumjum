@@ -8,7 +8,9 @@ namespace algorithms
 
 struct Event
 {
-    virtual primitives::Point getPoint() const;
+    virtual ~Event() {};
+    virtual primitives::Point getPoint() const = 0;
+    virtual primitives::LineLineIntersection getIntersection() const = 0;
 };
 
 bool operator<(const Event& lhs, const Event& rhs);
@@ -22,7 +24,7 @@ struct IntersectionEvent: public Event
     const primitives::LineSegment& getFirstLine() const { return *m_firstLine; }
     const primitives::LineSegment& getSecondLine() const { return *m_secondLine; }
 
-    primitives::LineLineIntersection getIntersection() const { return m_intersection; };
+    primitives::LineLineIntersection getIntersection() const override { return m_intersection; };
 
     primitives::Point getPoint() const override;
 
@@ -39,6 +41,11 @@ struct EndPointEvent: public Event
     EndPointEvent() = delete;
 
     primitives::Point getPoint() const override;
+
+    primitives::LineLineIntersection getIntersection() const override
+    {
+        throw std::logic_error("getIntersection called on non-IntersectionEvent.");
+    }
 
     bool isUpperEndPoint() const { return m_isUpper; }
 
