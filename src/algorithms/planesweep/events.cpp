@@ -6,11 +6,6 @@
 namespace algorithms
 {
 
-// primitives::LineLineIntersection Event::getIntersection() const
-// {
-//     throw std::logic_error("getIntersection called on non-IntersectionEvent.");
-// }
-
 bool operator<(const Event& lhs, const Event& rhs)
 {
     return lhs.getPoint() < rhs.getPoint();
@@ -27,6 +22,7 @@ IntersectionEvent::IntersectionEvent(primitives::LineSegment* line, primitives::
     m_firstLine = line;
     m_secondLine = otherLine;
     m_intersection = m_firstLine->computeIntersection(*m_secondLine);
+    m_eventType = EventType::Intersection;
 }
 
 primitives::Point IntersectionEvent::getPoint() const

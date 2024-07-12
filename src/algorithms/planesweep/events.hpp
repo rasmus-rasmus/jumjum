@@ -6,11 +6,23 @@
 namespace algorithms
 {
 
+enum EventType
+{
+    Base,
+    Intersection,
+    EndPoint
+};
+
 struct Event
 {
     virtual ~Event() {};
     virtual primitives::Point getPoint() const = 0;
     virtual primitives::LineLineIntersection getIntersection() const = 0;
+
+    EventType getType() const { return m_eventType; }
+
+protected:
+    EventType m_eventType = EventType::Base;
 };
 
 bool operator<(const Event& lhs, const Event& rhs);
@@ -36,7 +48,7 @@ private:
 
 struct EndPointEvent: public Event
 {
-    EndPointEvent(primitives::LineSegment* line, bool isUpper) : m_line(line), m_isUpper(isUpper) {}
+    EndPointEvent(primitives::LineSegment* line, bool isUpper) : m_line(line), m_isUpper(isUpper) { m_eventType = EventType::EndPoint; }
 
     EndPointEvent() = delete;
 
