@@ -10,5 +10,10 @@ TEST_CASE("Point comparison operator")
     CHECK(Point(0., 1.) < Point(-1., 0.));
     CHECK(Point(0., 1.) < Point(0., 0.));
     CHECK(Point(0., 1.) < Point(1., 0.));
+
+    CHECK(Point(0, .1) < Point(1, -.1));
+    CHECK(Point(0, .1) < Point(.5, -.5));
+    CHECK(Point(1, -.1) < Point(.5, -.5));
+    CHECK(Point(.5, .5) < Point(.5, -.5));
 }
 

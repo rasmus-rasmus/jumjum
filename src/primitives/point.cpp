@@ -21,12 +21,11 @@ double Point::distance(const Point& otherPoint) const
 
 bool operator<(const Point& lhs, const Point& rhs)
 {
-    if (lhs.y() > rhs.y())
+    if (std::abs(lhs.y() - rhs.y()) < 1e-6)
     {
-        return true;
+        return lhs.x() < rhs.x();
     }
-
-    return lhs.x() < rhs.x();
+    return lhs.y() > rhs.y();
 }
 
 std::ostream& operator<<(std::ostream& ost, const Point& point)
