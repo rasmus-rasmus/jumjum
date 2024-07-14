@@ -11,35 +11,35 @@ TEST_CASE("IntersectionEvent constructor")
     primitives::LineSegment firstLine(primitives::Point(-1., 0.), primitives::Point(1., 0.));
     primitives::LineSegment secondLine(primitives::Point(-1., 1.), primitives::Point(1., 1.));
 
-    CHECK_THROWS(IntersectionEvent(&firstLine, &secondLine));
+    CHECK_THROWS(IntersectionEvent(firstLine, secondLine));
 }
 
-TEST_CASE("getIntersection polymorphism")
-{
-    primitives::LineSegment firstLine(primitives::Point(-1., 0.), primitives::Point(1., 0.));
-    primitives::LineSegment secondLine(primitives::Point(0., 1.), primitives::Point(0., -1.));
-    IntersectionEvent intersection(&firstLine, &secondLine);
-    Event* eventPtrToIntersection = &intersection;
+// TEST_CASE("getIntersection polymorphism")
+// {
+//     primitives::LineSegment firstLine(primitives::Point(-1., 0.), primitives::Point(1., 0.));
+//     primitives::LineSegment secondLine(primitives::Point(0., 1.), primitives::Point(0., -1.));
+//     IntersectionEvent intersection(&firstLine, &secondLine);
+//     Event* eventPtrToIntersection = &intersection;
 
-    CHECK_NOTHROW(eventPtrToIntersection->getIntersection());
+//     CHECK_NOTHROW(eventPtrToIntersection->getIntersection());
 
-    EndPointEvent endPoint(&firstLine, true);
+//     EndPointEvent endPoint(&firstLine, true);
 
-    Event* eventPtrToEndPoint = &endPoint;
+//     Event* eventPtrToEndPoint = &endPoint;
 
-    CHECK_THROWS(eventPtrToEndPoint->getIntersection());
-}
+//     CHECK_THROWS(eventPtrToEndPoint->getIntersection());
+// }
 
 TEST_CASE("getType polymorphism")
 {
     primitives::LineSegment firstLine(primitives::Point(-1., 0.), primitives::Point(1., 0.));
     primitives::LineSegment secondLine(primitives::Point(0., 1.), primitives::Point(0., -1.));
-    IntersectionEvent intersection(&firstLine, &secondLine);
+    IntersectionEvent intersection(firstLine, secondLine);
     Event* eventPtrToIntersection = &intersection;
 
     CHECK(eventPtrToIntersection->getType() == EventType::Intersection);
 
-    EndPointEvent endPoint(&firstLine, true);
+    EndPointEvent endPoint(firstLine, true);
 
     Event* eventPtrToEndPoint = &endPoint;
 

@@ -28,11 +28,11 @@ struct LineSegment
     Point getEndPoint() const { return m_endPoint; }
     glm::dvec2 getDirection() const;
 
-    double length();
+    double length() const;
 
-    bool intersects(const LineSegment& otherLine);
+    bool intersects(const LineSegment& otherLine) const;
 
-    LineLineIntersection computeIntersection(const LineSegment& otherLine);
+    LineLineIntersection computeIntersection(const LineSegment& otherLine) const;
 
 private:
     Point m_startPoint;

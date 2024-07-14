@@ -2,7 +2,7 @@
 
 #include <glm/geometric.hpp>
 
-#include <iostream>
+#include <algorithm>
 
 #include "utility/geomutils.hpp"
 
@@ -65,9 +65,9 @@ glm::dvec2 LineSegment::getDirection() const
     return glm::normalize(unNormalizedDir);
 }
 
-double LineSegment::length() { return m_startPoint.distance(m_endPoint); }
+double LineSegment::length() const { return m_startPoint.distance(m_endPoint); }
 
-bool LineSegment::intersects(const LineSegment& otherLine)
+bool LineSegment::intersects(const LineSegment& otherLine) const
 {
     if (getOrientation(otherLine.getStartPoint(), *this) == Orientation::On && getOrientation(otherLine.getEndPoint(), *this) == Orientation::On)
     {
@@ -84,7 +84,7 @@ bool LineSegment::intersects(const LineSegment& otherLine)
            && getOrientation(otherLine.getStartPoint(), *this) * getOrientation(otherLine.getEndPoint(), *this) <= 0;
 }
 
-LineLineIntersection LineSegment::computeIntersection(const LineSegment& otherLine)
+LineLineIntersection LineSegment::computeIntersection(const LineSegment& otherLine) const
 {
     if (!this->intersects(otherLine))
     {
@@ -144,5 +144,6 @@ LineLineIntersection LineSegment::computeIntersection(const LineSegment& otherLi
 
     return utility::toPoint(intersectionInGlobalCoords);
 }
+
 
 }
