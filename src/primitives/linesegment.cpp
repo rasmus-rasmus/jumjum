@@ -58,6 +58,24 @@ LineSegment::LineSegment(const Point& startPoint, const Point& endPoint)
         m_endPoint = endPoint;
 }
 
+void LineSegment::setStartPoint(const Point& startPoint) 
+{
+    if (startPoint.squareDistance(m_endPoint) < 1e-6)
+    {
+        throw std::logic_error("Degenerate line segment.");
+    }
+    m_startPoint = startPoint;
+}
+
+void LineSegment::setEndPoint(const Point& endPoint) 
+{
+    if (m_startPoint.squareDistance(endPoint) < 1e-6)
+    {
+        throw std::logic_error("Degenerate line segment.");
+    }
+    m_endPoint = endPoint;
+}
+
 glm::dvec2 LineSegment::getDirection() const
 {
     glm::dvec2 unNormalizedDir(m_endPoint.x() - m_startPoint.x(), m_endPoint.y() - m_startPoint.y());

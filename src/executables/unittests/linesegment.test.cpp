@@ -96,3 +96,17 @@ TEST_CASE("LineSegment::computeIntersection")
         performCheck(i, lineB, lineA);
     }
 }
+
+TEST_CASE("Intersection in end points")
+{
+    LineSegment lineA(Point(0., .1), Point(1., 0.));
+    LineSegment lineB(Point(1., .5), Point(1., -.5));
+
+    CHECK(lineA.intersects(lineB));
+
+    auto result = lineA.computeIntersection(lineB);
+
+    CHECK(std::holds_alternative<Point>(result));
+
+    CHECK(std::get<Point>(result).distance(Point(1., 0.)) < 1e-6);
+}

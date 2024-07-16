@@ -2,13 +2,18 @@
 #include "algorithms/planesweep/planesweep.hpp"
 
 #include <set>
+#include <algorithm>
 
 using namespace algorithms;
 
 int main()
 {
-    std::vector<primitives::LineSegment> lines = {primitives::LineSegment(primitives::Point(0., .1), primitives::Point(1., -.1)), 
-                                                  primitives::LineSegment(primitives::Point(.5, .5), primitives::Point(.5, -.5))};
+    std::vector<primitives::LineSegment> lines = {
+                                                  primitives::LineSegment(primitives::Point(0., .1), primitives::Point(1., -.1)), 
+                                                  primitives::LineSegment(primitives::Point(0, .5), primitives::Point(0, -.5)),
+                                                  primitives::LineSegment(primitives::Point(.5, .5), primitives::Point(.5, -.5)),
+                                                  primitives::LineSegment(primitives::Point(1., .5), primitives::Point(1., -.5))
+                                                  };
 
     Planesweep algo(lines);
 

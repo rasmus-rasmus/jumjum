@@ -26,6 +26,9 @@ struct LineSegment
 
     Point getStartPoint() const { return m_startPoint; }
     Point getEndPoint() const { return m_endPoint; }
+    void setStartPoint(const Point& startPoint);
+    void setEndPoint(const Point& endPoint);
+
     glm::dvec2 getDirection() const;
 
     double length() const;

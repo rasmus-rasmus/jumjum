@@ -6,14 +6,21 @@
 namespace algorithms
 {
 
-// bool operator<(const Event& lhs, const Event& rhs)
-// {
-//     return lhs.getPoint() < rhs.getPoint();
-// }
-
 bool Event::operator<(const Event& otherEvent)
 {
-    return this->getPosition() < otherEvent.getPosition();
+    auto thisPosition = this->getPosition();
+    auto otherPosition = otherEvent.getPosition();
+
+    if (thisPosition.squareDistance(otherPosition) < 1e-6)
+    {
+        // In case of two events happening at the same position, e. g., an intersection
+        // in a lower end point event, we want to make sure the intersection event is processed first.
+        // Otherwise the line whose end point is intersected will have been removed from the status line
+        // by the time the intersection event is processed.
+        return this->getType() < otherEvent.getType();
+    }
+
+    return thisPosition < otherPosition;
 }
 
 IntersectionEvent::IntersectionEvent(primitives::LineSegment line, primitives::LineSegment otherLine)
