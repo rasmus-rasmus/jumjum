@@ -163,5 +163,16 @@ LineLineIntersection LineSegment::computeIntersection(const LineSegment& otherLi
     return utility::toPoint(intersectionInGlobalCoords);
 }
 
-
+bool operator==(const LineSegment& lhs, const LineSegment& rhs)
+{
+    return std::min(lhs.getEndPoint(), lhs.getStartPoint()).squareDistance(std::min(rhs.getEndPoint(), rhs.getStartPoint())) < 1e-6
+           && std::max(lhs.getEndPoint(), lhs.getStartPoint()).squareDistance(std::max(rhs.getEndPoint(), rhs.getStartPoint())) < 1e-6;
 }
+
+std::ostream& operator<<(std::ostream& ost, const LineSegment& lineSegment)
+{
+    ost << "LineSegment: " << lineSegment.getStartPoint() << " -> " << lineSegment.getEndPoint();
+    return ost;
+}
+
+} // namespace primitives

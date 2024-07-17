@@ -47,6 +47,8 @@ struct IntersectionEvent: public Event
 
     primitives::Point getPosition() const override;
 
+    bool operator==(const IntersectionEvent& otherIntersectionEvent);
+
 private:
     primitives::LineSegment m_firstLine;
     primitives::LineSegment m_secondLine;

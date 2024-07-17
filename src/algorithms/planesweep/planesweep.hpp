@@ -17,7 +17,7 @@ struct Planesweep
 {
     Planesweep(const std::vector<primitives::LineSegment>& lines);
 
-    std::vector<LinePair> perform();
+    std::vector<LinePair> perform(bool printDebugInfo = false);
 
     std::vector<primitives::LineSegment> m_lines;
 };

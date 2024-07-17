@@ -108,13 +108,31 @@ Planesweep::Planesweep(const std::vector<primitives::LineSegment>& lines)
 // NB: Remember to deallocate when removing events from queue. Use eraseEventFromQueue below for memory safe removal. 
 void insertIntersectionEvent(std::multiset<Event*, EventComparator>& eventQueue, 
                              ComparableLineSegment firstLine, 
-                             ComparableLineSegment secondLine)
+                             ComparableLineSegment secondLine,
+                             double currSweepLinePosition)
 {
     // Ensure that the actual unfundged lines are recorded.
     firstLine.defudgeEndPoints();
     secondLine.defudgeEndPoints();
 
     auto newIntersectionEvent = new IntersectionEvent(firstLine, secondLine);
+
+    if (newIntersectionEvent->getPosition().y() > currSweepLinePosition)
+    {
+        // Intersection is above current sweep line, so has already been processed
+        return;
+    }
+
+    auto [it0, it1] = eventQueue.equal_range(newIntersectionEvent);
+    for (auto foundIt = it0; foundIt != it1; ++foundIt)
+    {
+        if (*dynamic_cast<IntersectionEvent*>(*foundIt) == *newIntersectionEvent)
+        {
+            // Intersection event is alreay in event queue
+            return;
+        }
+    }
+
     Event* newEvent = newIntersectionEvent;
     eventQueue.insert(newEvent);
 }
@@ -141,23 +159,23 @@ void processIntersectionEvent(std::multiset<Event*, EventComparator>& eventQueue
         {event->getFirstLine(), event->getSecondLine()}
     );
 
-    double currY = event->getPosition().y();
+    double currSweepLinePosition = event->getPosition().y();
 
     double firstLineMaxY = std::max(event->getFirstLine().getStartPoint().y(), event->getFirstLine().getEndPoint().y());
     double firstLineMinY = std::min(event->getFirstLine().getStartPoint().y(), event->getFirstLine().getEndPoint().y());
     double secondLineMaxY = std::max(event->getSecondLine().getStartPoint().y(), event->getSecondLine().getEndPoint().y());
     double secondLineMinY = std::min(event->getSecondLine().getStartPoint().y(), event->getSecondLine().getEndPoint().y());
 
-    if (firstLineMaxY < currY + 1e-5 || secondLineMaxY < currY + 1e-5
-        || firstLineMinY > currY - 1e-5 || secondLineMinY > currY - 1e-5)
+    if (firstLineMaxY < currSweepLinePosition + 1e-5 || secondLineMaxY < currSweepLinePosition + 1e-5
+        || firstLineMinY > currSweepLinePosition - 1e-5 || secondLineMinY > currSweepLinePosition - 1e-5)
     {
         // The intersection happens in an (upper or lower) end point of one or both lines,
         // so we don't need to swap their positions in the status line.
         return;
     }
 
-    auto firstLinePos = statusLine.find(ComparableLineSegment(event->getFirstLine(), currY + 1e-5));
-    auto secondLinePos = statusLine.find(ComparableLineSegment(event->getSecondLine(), currY + 1e-5));
+    auto firstLinePos = statusLine.find(ComparableLineSegment(event->getFirstLine(), currSweepLinePosition + 1e-5));
+    auto secondLinePos = statusLine.find(ComparableLineSegment(event->getSecondLine(), currSweepLinePosition + 1e-5));
 
     if (firstLinePos == statusLine.end())
     {
@@ -169,35 +187,36 @@ void processIntersectionEvent(std::multiset<Event*, EventComparator>& eventQueue
         throw std::logic_error("Intersection event with second line not in status line.");
     }
 
-    if (std::distance(firstLinePos, secondLinePos) != 1)
+    if (std::abs(std::distance(firstLinePos, secondLinePos)) != 1)
     {
         throw std::logic_error("Intersection event with lines not adjacent in status line.");
     }
+    auto minPos = std::distance(firstLinePos, secondLinePos) > 0 ? firstLinePos : secondLinePos;
+    auto maxPos = std::next(minPos);
 
     // To swap the positions of firstLine and secondLine in the status line we have to remove
-    // firstLine and then insert it again compared along a ray just *below* the intersection point.
-    // To this end, we subtract a small offset from the comparison ray.
-    statusLine.erase(firstLinePos);
-    ComparableLineSegment toInsert(event->getFirstLine(), currY-1e-5);
-    statusLine.insert(toInsert);
+    // one (we choose the lowest ordered, i. e., minPos) and then insert it again compared along 
+    // a ray just *below* the intersection point. To this end, we fudge the comparison ray slightly down.
+    // For minPos and maxPos to still correctly point to the lowest, resp. hightest, ordered line,
+    // they must also be correctly reassigned.
+    ComparableLineSegment toInsert(*minPos, currSweepLinePosition-1e-5);
+    minPos = statusLine.erase(minPos);
+    maxPos = statusLine.insert(toInsert).first;
 
-    auto minPos = *firstLinePos < *secondLinePos ? firstLinePos : secondLinePos;
 
     // minNeighbor will be decremented below once it has been verified that this is valid,
     // i. e., that minPos is not first element.
     auto minNeighbor = minPos;
     if (minPos != statusLine.begin() && minPos->intersects(*(--minNeighbor)))
     {
-        insertIntersectionEvent(eventQueue, *minNeighbor, *minPos);
+        insertIntersectionEvent(eventQueue, *minNeighbor, *minPos, currSweepLinePosition);
     }
 
-    auto maxPos = minPos;
-    maxPos++;
     // As above, maxNeighbor will be incremented once it has been verified that this is valid.
     auto maxNeighbor = maxPos;
     if (++maxNeighbor != statusLine.end() && maxPos->intersects(*maxNeighbor))
     {
-        insertIntersectionEvent(eventQueue, *maxPos, *maxNeighbor);
+        insertIntersectionEvent(eventQueue, *maxPos, *maxNeighbor, currSweepLinePosition);
     }
 }
 
@@ -218,8 +237,8 @@ void processEndPointEvent(std::multiset<Event*, EventComparator>& eventQueue,
 {
     if (event->isUpperEndPoint())
     {
-        double currY = event->getPosition().y();
-        ComparableLineSegment toInsert(event->getLine(), currY);
+        double currSweepLinePosition = event->getPosition().y();
+        ComparableLineSegment toInsert(event->getLine(), currSweepLinePosition);
         if (statusLine.find(toInsert) != statusLine.end())
         {
             // If the line is intersected in its upper end point by
@@ -240,25 +259,25 @@ void processEndPointEvent(std::multiset<Event*, EventComparator>& eventQueue,
 
         if (insertedIt != statusLine.begin() && insertedIt->intersects(*(--leftNbr)))
         {
-            insertIntersectionEvent(eventQueue, *leftNbr, *insertedIt);
+            insertIntersectionEvent(eventQueue, *leftNbr, *insertedIt, currSweepLinePosition);
         }
 
         if (++rightNbr != statusLine.end() && insertedIt->intersects(*rightNbr))
         {
-            insertIntersectionEvent(eventQueue, *insertedIt, *rightNbr);
+            insertIntersectionEvent(eventQueue, *insertedIt, *rightNbr, currSweepLinePosition);
         }
 
         return;
     }
     
     // Lower end point event.
-    auto currY = event->getPosition().y();
-    auto itToDelete = statusLine.find(ComparableLineSegment(event->getLine(), currY));
+    auto currSweepLinePosition = event->getPosition().y();
+    auto itToDelete = statusLine.find(ComparableLineSegment(event->getLine(), currSweepLinePosition));
     auto rightNbr = statusLine.erase(itToDelete);
     auto leftNbr = rightNbr;
     if (rightNbr != statusLine.end() && rightNbr != statusLine.begin() && (--leftNbr)->intersects(*rightNbr))
     {
-        insertIntersectionEvent(eventQueue, *leftNbr, *rightNbr);
+        insertIntersectionEvent(eventQueue, *leftNbr, *rightNbr, currSweepLinePosition);
     }
 }
 
@@ -283,7 +302,7 @@ void processNextEvent(std::multiset<Event*, EventComparator>& eventQueue, std::s
     eraseEventFromQueue(eventQueue, nextEventIt);
 }
 
-std::vector<LinePair> Planesweep::perform()
+std::vector<LinePair> Planesweep::perform(bool printDebugInfo)
 {
     std::multiset<Event*, EventComparator> eventQueue;
 
@@ -302,6 +321,21 @@ std::vector<LinePair> Planesweep::perform()
     while (!eventQueue.empty())
     {
         processNextEvent(eventQueue, statusLine, intersectionsOut);
+        if (printDebugInfo)
+        {
+            std::cout << "Processing event of type: " << (*eventQueue.begin())->getType() << std::endl;
+            std::cout << "Status line: " << std::endl;
+            for (auto line : statusLine)
+            {
+                std::cout << line << std::endl;
+            }
+            std::cout << "\nEvent Queue: " << std::endl;
+            for (auto event : eventQueue)
+            {
+                std::cout << "Type: " << event->getType() << " -- " << "Position: " << event->getPosition() << std::endl;
+            }
+            std::cout << "-----------------------------------" << std::endl;
+        }
     }
 
     return intersectionsOut;

@@ -42,6 +42,10 @@ private:
     Point m_endPoint;
 };
 
+bool operator==(const LineSegment& lhs, const LineSegment& rhs);
+
+std::ostream& operator<<(std::ostream& ost, const LineSegment& lineSegment);
+
 } // namespace primitives
 
 #endif

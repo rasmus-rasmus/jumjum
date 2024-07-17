@@ -56,6 +56,13 @@ primitives::Point IntersectionEvent::getPosition() const
            : intersectionLine.getEndPoint();
 }
 
+bool IntersectionEvent::operator==(const IntersectionEvent& otherIntersectionEvent)
+{
+    return (getFirstLine() == otherIntersectionEvent.getFirstLine() && getSecondLine() == otherIntersectionEvent.getSecondLine())
+           || (getFirstLine() == otherIntersectionEvent.getSecondLine() && getSecondLine() == otherIntersectionEvent.getFirstLine());
+}
+
+
 primitives::Point EndPointEvent::getPosition() const
 {
     if (m_isUpper)
