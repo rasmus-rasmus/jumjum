@@ -104,7 +104,7 @@ Planesweep::Planesweep(const std::vector<primitives::LineSegment>& lines)
     }
 }
 
-// Allocates memory for IntersectionEvent on the heap and inserts pointer to new event into eventQueue.
+// Allocates memory for IntersectionEvent and inserts pointer to new event into eventQueue.
 // NB: Remember to deallocate when removing events from queue. Use eraseEventFromQueue below for memory safe removal. 
 void insertIntersectionEvent(std::multiset<Event*, EventComparator>& eventQueue, 
                              ComparableLineSegment firstLine, 
@@ -321,6 +321,7 @@ std::vector<LinePair> Planesweep::perform(bool printDebugInfo)
     while (!eventQueue.empty())
     {
         processNextEvent(eventQueue, statusLine, intersectionsOut);
+
         if (printDebugInfo)
         {
             std::cout << "Processing event of type: " << (*eventQueue.begin())->getType() << std::endl;

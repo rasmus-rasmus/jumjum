@@ -42,6 +42,7 @@ TEST_CASE("planesweep::perform - general case")
         --infiniteLoopGuard;
     }
 
+    // Read data from test file. Test file found on the interweb.
     std::ifstream file(currPath / "src/executables/endtoendtests/testdata/lines.txt");
     if (!file.is_open())
     {
@@ -67,4 +68,6 @@ TEST_CASE("planesweep::perform - general case")
     Planesweep algo(lines);
 
     auto intersections = algo.perform();
+
+    CHECK(intersections.size() == 60);
 }
