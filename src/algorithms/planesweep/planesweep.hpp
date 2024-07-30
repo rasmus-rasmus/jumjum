@@ -11,7 +11,7 @@ namespace algorithms
 using LinePair = std::pair<primitives::LineSegment, primitives::LineSegment>;
 
 // Simple wrapper class around implementation of planesweep algorithm.
-// LineSegments can be added/remoed from the m_lines vector and running
+// LineSegments can be added/removed from the m_lines vector and running
 // perform will run a planesweep on the LineSegments currently in m_lines.
 struct Planesweep
 {

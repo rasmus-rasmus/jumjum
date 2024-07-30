@@ -3,8 +3,6 @@
 #include "algorithms/planesweep/planesweep.hpp"
 
 #include <fstream>
-#include <sstream>
-#include <iostream>
 #include <filesystem>
 
 using namespace algorithms;
@@ -43,7 +41,7 @@ TEST_CASE("planesweep::perform - general case")
     }
 
     // Read data from test file. Test file found on the interweb.
-    std::ifstream file(currPath / "src/executables/endtoendtests/testdata/lines.txt");
+    std::ifstream file(currPath / "src/executables/correctnesstests/testdata/lines.txt");
     if (!file.is_open())
     {
         throw std::runtime_error("Could not open data file.");

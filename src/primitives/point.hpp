@@ -16,6 +16,8 @@ struct Point
 
     double distance(const Point& otherPoint) const;
     double squareDistance(const Point& otherPoint) const;
+    double squareNorm() const;
+    double norm() const;
 
     double m_x;
     double m_y;

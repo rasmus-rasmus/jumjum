@@ -19,6 +19,16 @@ double Point::distance(const Point& otherPoint) const
     return std::sqrt(squareDistance(otherPoint));
 }
 
+double Point::squareNorm() const
+{
+    return m_x * m_x + m_y * m_y;
+}
+
+double Point::norm() const
+{
+    return std::sqrt(squareNorm());
+}
+
 bool operator<(const Point& lhs, const Point& rhs)
 {
     if (std::abs(lhs.y() - rhs.y()) < 1e-6)

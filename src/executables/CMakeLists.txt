@@ -13,13 +13,14 @@ set(UNIT_TEST_SOURCES
     unittests/getOrientation.test.cpp
     unittests/linesegment.test.cpp
     unittests/point.test.cpp
-    unittests/events.test.cpp)
+    unittests/events.test.cpp
+    unittests/triangulation.test.cpp)
 
-set(END_TO_END_TEST_SOURCES
-    endtoendtests/planesweep.test.cpp)
+set(CORRECTNESS_TEST_SOURCES
+    correctnesstests/planesweep.test.cpp)
 
 add_executable(test test.cpp ${UNIT_TEST_SOURCES}
-                             ${END_TO_END_TEST_SOURCES})
+                             ${CORRECTNESS_TEST_SOURCES})
 
 target_include_directories(test PUBLIC ${PROJECT_SOURCE_DIR}/src)
 

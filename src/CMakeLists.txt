@@ -1,10 +1,13 @@
 set(PRIMITIVES_SOURCE_FILES
         primitives/point.cpp
-        primitives/linesegment.cpp)
+        primitives/linesegment.cpp
+        primitives/circle.cpp
+        primitives/triangle.cpp)
 
 set(ALGORITHMS_SOURCE_FILES
         algorithms/planesweep/events.cpp
-        algorithms/planesweep/planesweep.cpp)
+        algorithms/planesweep/planesweep.cpp
+        algorithms/delaunay/triangulation.cpp)
 
 set(UTILITY_SOURCE_FILES
         utility/geomutils.cpp)
