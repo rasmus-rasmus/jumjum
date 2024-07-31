@@ -13,6 +13,7 @@ set(UNIT_TEST_SOURCES
     unittests/getOrientation.test.cpp
     unittests/linesegment.test.cpp
     unittests/point.test.cpp
+    unittests/circle.test.cpp
     unittests/events.test.cpp
     unittests/triangulation.test.cpp)
 
