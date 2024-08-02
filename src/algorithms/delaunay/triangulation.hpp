@@ -23,17 +23,14 @@ struct DelaunayTriangulator
 {
     DelaunayTriangulator(std::vector<primitives::Point> points) : m_vertices(points) {}
 
-    // Functions for initial testing - delete later
-    void addEdge(size_t v1, size_t v2);
-
 protected:
+    void addEdge(size_t v1, size_t v2);
     // Use with care; will throw if used on exterior edges, i.e., edges which
     // have only one opposing vertex.
     std::pair<size_t, size_t> getOpposingVerticesToEdge(Edge edge) const;
     void flipEdge(Edge edge);
     int legalizeEdges();
 
-private:
     std::vector<primitives::Point> m_vertices;
     std::multimap<size_t, size_t> m_edges;
 };

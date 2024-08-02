@@ -46,4 +46,27 @@ std::pair<size_t, size_t> DelaunayTriangulator::getOpposingVerticesToEdge(Edge e
     return {opposingVerticesFound[0], opposingVerticesFound[1]};
 }
 
+void DelaunayTriangulator::flipEdge(Edge edge)
+{
+    auto [newEndPoint0, newEndPoint1] = getOpposingVerticesToEdge(edge);
+
+    // Remove old edge. Since the edges are undirected we need to remove its 
+    // reversed counterpart as well.
+    for (size_t oldEndPoint : {edge.first, edge.second})
+    {
+        auto [startIt, endIt] = m_edges.equal_range(oldEndPoint);
+        for (auto it = startIt; it != endIt; ++it)
+        {
+            if (it->second == edge.first || it->second == edge.second)
+            {
+                m_edges.erase(it);
+                break;
+            }
+        }
+    }
+    
+    // Add new edge
+    addEdge(newEndPoint0, newEndPoint1);
+}
+
 } // namespace algorithms
