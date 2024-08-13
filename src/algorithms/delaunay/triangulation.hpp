@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <optional>
 
 namespace algorithms
 {
@@ -27,8 +28,8 @@ protected:
     void addEdge(size_t v1, size_t v2);
     // Use with care; will throw if used on exterior edges, i.e., edges which
     // have only one opposing vertex.
-    std::pair<size_t, size_t> getOpposingVerticesToEdge(Edge edge) const;
-    void flipEdge(Edge edge);
+    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge) const;
+    Edge flipEdge(Edge edge);
     int legalizeEdges();
 
     std::vector<primitives::Point> m_vertices;

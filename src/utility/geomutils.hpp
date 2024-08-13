@@ -15,6 +15,8 @@ glm::dvec2 toGLM(const primitives::Point& point);
 
 primitives::Point toPoint(glm::dvec2 vec);
 
+double getAngle(const glm::dvec2& vec1, const glm::dvec2& vec2);
+
 } // namespace utility
 
 #endif

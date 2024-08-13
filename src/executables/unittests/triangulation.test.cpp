@@ -12,7 +12,7 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
 
     DelaunayTriangulatorTest() : DelaunayTriangulator(std::vector<primitives::Point>()) {}
     DelaunayTriangulatorTest(std::vector<primitives::Point> points) : DelaunayTriangulator(points) {}
-    std::pair<size_t, size_t> getOpposingVerticesToEdge(Edge edge)
+    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge)
     {
         return DelaunayTriangulator::getOpposingVerticesToEdge(edge);
     }
@@ -22,7 +22,7 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
         return DelaunayTriangulator::addEdge(v1, v2);
     }
 
-    void flipEdge(Edge edge)
+    Edge flipEdge(Edge edge)
     {
         return DelaunayTriangulator::flipEdge(edge);
     }
@@ -78,8 +78,8 @@ TEST_CASE("DelaunayTriangulator::getOpposingVerticesToEdge")
 
     auto opposingVertices = triangulator.getOpposingVerticesToEdge({0, 2});
 
-    CHECK(std::min(opposingVertices.first, opposingVertices.second) == 1);
-    CHECK(std::max(opposingVertices.first, opposingVertices.second) == 3);
+    CHECK(std::min(opposingVertices.first, *opposingVertices.second) == 1);
+    CHECK(std::max(opposingVertices.first, *opposingVertices.second) == 3);
 
     CHECK_THROWS(triangulator.getOpposingVerticesToEdge({0, 1}));
 }

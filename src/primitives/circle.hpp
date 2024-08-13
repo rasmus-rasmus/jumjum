@@ -14,7 +14,7 @@ struct Circle
     Point getCenter() const { return m_center; }
     double getRadius() const { return m_radius; }
 
-    bool isInside(const Point& point) const;
+    bool contains(const Point& point) const;
 
 private:
     Point m_center;

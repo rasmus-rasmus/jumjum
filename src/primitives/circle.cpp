@@ -30,7 +30,7 @@ Circle::Circle(Point p1, Point p2, Point p3)
     m_radius = std::sqrt(b / a + m_center.squareNorm());
 }
 
-bool Circle::isInside(const Point& point) const
+bool Circle::contains(const Point& point) const
 {
     return m_center.squareDistance(point) < m_radius * m_radius;
 }

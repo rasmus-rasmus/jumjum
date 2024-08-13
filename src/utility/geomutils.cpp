@@ -19,4 +19,9 @@ primitives::Point toPoint(glm::dvec2 vec)
     return primitives::Point(vec.x, vec.y);
 }
 
+double getAngle(const glm::dvec2& vec1, const glm::dvec2& vec2)
+{
+    return atan2(vec2.y, vec2.x) - atan2(vec1.y, vec1.x);
+}
+
 } // namespace utility
