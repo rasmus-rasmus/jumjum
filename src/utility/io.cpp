@@ -5,6 +5,20 @@
 namespace utility
 {
 
+fs::path getProjectRootPath(int loopGuard)
+{
+    // Set working dir to project root.
+    auto currPath = std::filesystem::current_path();
+    while((!std::filesystem::exists(currPath / "README.md") || !std::filesystem::exists(currPath / "LICENSE") || !std::filesystem::exists(currPath / "Makefile"))
+           && loopGuard)
+    {
+        currPath = currPath.parent_path();
+        --loopGuard;
+    }
+
+    return currPath;
+}
+
 void loadTriangulationFromFile(fs::path inPath, algorithms::DelaunayTriangulator& triangulation)
 {
     std::ifstream file(inPath);

@@ -25,6 +25,7 @@ using Edge = std::pair<size_t, size_t>;
 
 struct DelaunayTriangulator
 {
+    DelaunayTriangulator() = default;
     DelaunayTriangulator(std::vector<primitives::Point> points) : m_vertices(points) {}
 
     bool isDelaunay() const;
