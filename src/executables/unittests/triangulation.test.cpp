@@ -37,6 +37,10 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
         return DelaunayTriangulator::getOpposingVerticesToEdge(edge);
     }
 
+    int legalizeEdges()
+    {
+        return DelaunayTriangulator::legalizeEdges();
+    }
 };
 
 TEST_CASE("DelaunayTriangulator::addEdge")
@@ -140,4 +144,26 @@ TEST_CASE("DelaunayTriangulator::flipEdge")
     CHECK(!triangulator.hasEdge(2, 0));
 }
 
+TEST_CASE("DelaunayTriangulator::legalizeEdges")
+{
+    DelaunayTriangulatorTest triangulator1;
+    utility::loadTriangulationFromFile(utility::getProjectRootPath() / "src/executables/testdata/inputTriangulation1.txt", triangulator1);
+    auto numLegalizedEdges1 = triangulator1.legalizeEdges();
 
+    DelaunayTriangulatorTest triangulator2;
+    utility::loadTriangulationFromFile(utility::getProjectRootPath() / "src/executables/testdata/inputTriangulation2.txt", triangulator2);
+    auto numLegalizedEdges2 = triangulator2.legalizeEdges();
+
+    DelaunayTriangulatorTest triangulator3;
+    utility::loadTriangulationFromFile(utility::getProjectRootPath() / "src/executables/testdata/inputTriangulation3.txt", triangulator3);
+    auto numLegalizedEdges3 = triangulator3.legalizeEdges();
+
+    CHECK(numLegalizedEdges1 == 6);
+    CHECK(triangulator1.isDelaunay());
+
+    CHECK(numLegalizedEdges2 == 5);
+    CHECK(triangulator2.isDelaunay());
+
+    CHECK(numLegalizedEdges3 == 4);
+    CHECK(triangulator3.isDelaunay());
+}
