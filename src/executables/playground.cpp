@@ -1,72 +1,76 @@
-#include <iostream>
-#include "algorithms/planesweep/planesweep.hpp"
-
 #include <set>
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+#include "primitives/point.hpp"
+#include "primitives/triangle.hpp"
+#include "algorithms/delaunay/triangulation.hpp"
+#include "utility/io.hpp"
+
+// #include "executables/unittests/triangulation.test.cpp"
 
 using namespace algorithms;
 
-int main()
+struct DelaunayTriangulatorTest : DelaunayTriangulator
 {
-    // std::vector<primitives::LineSegment> lines = {
-    //                                               primitives::LineSegment(primitives::Point(0., .1), primitives::Point(1., -.1)), 
-    //                                               primitives::LineSegment(primitives::Point(0, .5), primitives::Point(0, -.5)),
-    //                                               primitives::LineSegment(primitives::Point(.5, .5), primitives::Point(.5, -.5)),
-    //                                               primitives::LineSegment(primitives::Point(1., .5), primitives::Point(1., -.5))
-    //                                               };
 
-    // Planesweep algo(lines);
-
-    // auto intersections = algo.perform();
-
-    // std::cout << intersections.size() << std::endl;
-
-    // for (auto inter : intersections)
-    // {
-    //     std::cout << "Intersection between lines "
-    //               << "["
-    //               << inter.first.getStartPoint() << " -> " << inter.first.getEndPoint()
-    //               << "]"
-    //               << " and "
-    //               << "["
-    //               << inter.second.getStartPoint() << " -> " << inter.second.getEndPoint()
-    //               << "]"
-    //               << " is: "
-    //               << std::get<primitives::Point>(inter.first.computeIntersection(inter.second))
-    //               << std::endl;
-    // }
-
-    primitives::LineSegment firstLine(primitives::Point(580., 716.), primitives::Point(271., 427.));
-    primitives::LineSegment secondLine(primitives::Point(439., 750.), primitives::Point(850., 558.));
-    primitives::LineSegment problematicLine(primitives::Point(703., 692.), primitives::Point(2., 675.));
-
-    std::vector<primitives::LineSegment> lines = {firstLine, secondLine, problematicLine};
-
-    Planesweep algo(lines);
-
-    auto intersections = algo.perform();
-
-    for (auto inter : intersections)
+    DelaunayTriangulatorTest() : DelaunayTriangulator(std::vector<primitives::Point>()) {}
+    DelaunayTriangulatorTest(std::vector<primitives::Point> points) : DelaunayTriangulator(points) {}
+    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge)
     {
-        std::cout << "Intersection between lines "
-                  << "["
-                  << inter.first.getStartPoint() << " -> " << inter.first.getEndPoint()
-                  << "]"
-                  << " and "
-                  << "["
-                  << inter.second.getStartPoint() << " -> " << inter.second.getEndPoint()
-                  << "]"
-                  << " is: "
-                  << std::get<primitives::Point>(inter.first.computeIntersection(inter.second))
-                  << std::endl;
+        return DelaunayTriangulator::getOpposingVerticesToEdge(edge);
     }
 
-    // std::cout << std::get<primitives::Point>(firstLine.computeIntersection(secondLine)) << std::endl;
-    // std::cout << std::get<primitives::Point>(firstLine.computeIntersection(problematicLine)) << std::endl;
-    // std::cout << std::get<primitives::Point>(secondLine.computeIntersection(problematicLine)) << std::endl;
-    // std::cout << (std::get<primitives::Point>(firstLine.computeIntersection(secondLine)) < std::get<primitives::Point>(firstLine.computeIntersection(problematicLine)))
-    //               << std::endl;
+    void addEdge(size_t v1, size_t v2)
+    {
+        return DelaunayTriangulator::addEdge(v1, v2);
+    }
 
+    Edge flipEdge(Edge edge)
+    {
+        return DelaunayTriangulator::flipEdge(edge);
+    }
+
+    int legalizeEdges()
+    {
+        return DelaunayTriangulator::legalizeEdges();
+    }
+
+    // Helper function for test purposes.
+    bool hasEdge(size_t v1, size_t v2)
+    {
+        auto v1Nbrs = m_edges.equal_range(v1);
+        return std::find_if(v1Nbrs.first, v1Nbrs.second, 
+                            [v2](const std::pair<size_t, size_t>& edge) { return edge.second == v2; }) 
+               != v1Nbrs.second;
+    }
+};
+
+int main()
+{
+    // Set working dir to project root.
+    auto currPath = std::filesystem::current_path();
+    int loopGuard = 10;
+    while((!std::filesystem::exists(currPath / "README.md") || !std::filesystem::exists(currPath / "LICENSE") || !std::filesystem::exists(currPath / "Makefile"))
+           && loopGuard)
+    {
+        currPath = currPath.parent_path();
+        --loopGuard;
+    }
+
+    for (int i = 1; i <= 3; ++i)
+    {
+        std::string filename = "inputTriangulation" + std::to_string(i) + ".txt";
+        DelaunayTriangulatorTest triangulator;
+        utility::loadTriangulationFromFile(currPath / "src/executables/correctnesstests/testdata" / filename, triangulator);
+        std::cout << "isLegal: " << triangulator.isDelaunay() << std::endl;
+        auto numFlips = triangulator.legalizeEdges();
+        std::cout << "Number of flips: " << numFlips << std::endl;
+        std::cout << "isLegal: " << triangulator.isDelaunay() << std::endl;
+    }
+    
     return 0;
 }

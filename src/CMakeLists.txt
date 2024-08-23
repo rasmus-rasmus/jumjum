@@ -10,7 +10,8 @@ set(ALGORITHMS_SOURCE_FILES
         algorithms/delaunay/triangulation.cpp)
 
 set(UTILITY_SOURCE_FILES
-        utility/geomutils.cpp)
+        utility/geomutils.cpp
+        utility/io.cpp)
 
 add_library(jumjum-geom ${PRIMITIVES_SOURCE_FILES}
                         ${ALGORITHMS_SOURCE_FILES}

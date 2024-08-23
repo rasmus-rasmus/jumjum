@@ -21,7 +21,16 @@ primitives::Point toPoint(glm::dvec2 vec)
 
 double getAngle(const glm::dvec2& vec1, const glm::dvec2& vec2)
 {
-    return atan2(vec2.y, vec2.x) - atan2(vec1.y, vec1.x);
+    double len1 = glm::length(vec1);
+    double len2 = glm::length(vec2);
+    if (len1 < 1e-8 || len2 < 1e-8)
+    {
+        throw std::invalid_argument("Zero-length vector passed to getAngle.");
+    }
+
+    double dot = glm::dot(vec1 / len1, vec2 / len2);
+
+    return std::acos(std::clamp(dot, -1.0, 1.0));
 }
 
 } // namespace utility

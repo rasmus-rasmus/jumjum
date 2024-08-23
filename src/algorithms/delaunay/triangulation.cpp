@@ -3,10 +3,12 @@
 
 #include <glm/vec2.hpp>
 
+#include <fstream>
+
 namespace algorithms
 {
 
-void DelaunayTriangulator::addEdge(size_t v1, size_t v2)
+void DelaunayTriangulator::addEdge(size_t v1, size_t v2, bool legalizeAfterInsertion)
 {
     if (v1 == v2)
     {
@@ -28,6 +30,11 @@ void DelaunayTriangulator::addEdge(size_t v1, size_t v2)
         == v2Nbrs.second)
     {
         m_edges.insert({v2, v1});
+    }
+
+    if (legalizeAfterInsertion)
+    {
+        legalizeEdges();
     }
 }
 
@@ -128,7 +135,7 @@ Edge DelaunayTriangulator::flipEdge(Edge edge)
     }
     
     // Add new edge
-    addEdge(newEndPoint0, *newEndPoint1);
+    addEdge(newEndPoint0, *newEndPoint1, false);
 
     return {newEndPoint0, *newEndPoint1};
 }
@@ -167,6 +174,54 @@ int DelaunayTriangulator::legalizeEdges()
     }
 
     return numLegalizedEdges;
+}
+
+bool DelaunayTriangulator::isDelaunay() const
+{
+    for (const auto& [v1, v2] : m_edges)
+    {
+        auto [opposingV1, opposingV2] = getOpposingVerticesToEdge({v1, v2});
+        if (opposingV2.has_value() 
+            && primitives::Triangle(m_vertices[v1], m_vertices[v2], m_vertices[opposingV1]).getCircumcircle().contains(m_vertices[*opposingV2]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void DelaunayTriangulator::writeTriangulationToFile(fs::path outPath) const
+{
+    std::ofstream oStream(outPath);
+    if (!oStream.is_open())
+    {
+        throw std::runtime_error("Could not open file for writing.");
+    }
+
+    std::set<std::set<size_t>> triangles;
+    for (const auto& [v1, v2] : m_edges)
+    {
+        auto [opposingV1, opposingV2] = getOpposingVerticesToEdge({v1, v2});
+        triangles.insert({v1, v2, opposingV1});
+        if (opposingV2.has_value())
+        {
+            triangles.insert({v1, v2, *opposingV2});
+        }
+    }
+    
+    oStream << m_vertices.size() << " " << triangles.size() << std::endl;
+
+    for (auto vIdx = 0; vIdx < m_vertices.size(); ++vIdx)
+    {
+        oStream << vIdx << " " << m_vertices[vIdx].x() << " " << m_vertices[vIdx].y() << std::endl;
+    }
+    for (const auto& tri : triangles)
+    {
+        oStream << *tri.begin() << " " << *(++tri.begin()) << " " << *(++(++tri.begin())) << std::endl;
+    }
+
+    oStream.close();
 }
 
 } // namespace algorithms

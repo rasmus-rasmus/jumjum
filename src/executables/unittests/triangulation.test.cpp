@@ -17,11 +17,6 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
         return DelaunayTriangulator::getOpposingVerticesToEdge(edge);
     }
 
-    void addEdge(size_t v1, size_t v2)
-    {
-        return DelaunayTriangulator::addEdge(v1, v2);
-    }
-
     Edge flipEdge(Edge edge)
     {
         return DelaunayTriangulator::flipEdge(edge);
@@ -43,8 +38,8 @@ TEST_CASE("DelaunayTriangulator::addEdge")
                                                                            primitives::Point(1, 0),
                                                                            primitives::Point(1, 1)});
 
-    triangulator.addEdge(0, 1);
-    triangulator.addEdge(1, 2);
+    triangulator.addEdge(0, 1, false);
+    triangulator.addEdge(1, 2, false);
 
     CHECK(triangulator.hasEdge(0, 1));
     CHECK(triangulator.hasEdge(1, 0));
@@ -55,9 +50,9 @@ TEST_CASE("DelaunayTriangulator::addEdge")
     CHECK(!triangulator.hasEdge(0, 2));
     CHECK(!triangulator.hasEdge(2, 0));
 
-    CHECK_THROWS(triangulator.addEdge(0, 0));
-    CHECK_THROWS(triangulator.addEdge(1, 1));
-    CHECK_THROWS(triangulator.addEdge(2, 2));
+    CHECK_THROWS(triangulator.addEdge(0, 0, false));
+    CHECK_THROWS(triangulator.addEdge(1, 1, false));
+    CHECK_THROWS(triangulator.addEdge(2, 2, false));
 }
 
 TEST_CASE("DelaunayTriangulator::getOpposingVerticesToEdge")
@@ -68,20 +63,20 @@ TEST_CASE("DelaunayTriangulator::getOpposingVerticesToEdge")
                                                                            primitives::Point(0, 1)});
 
     // A square
-    triangulator.addEdge(0, 1);
-    triangulator.addEdge(1, 2);
-    triangulator.addEdge(2, 3);
-    triangulator.addEdge(3, 0);
+    triangulator.addEdge(0, 1, false);
+    triangulator.addEdge(1, 2, false);
+    triangulator.addEdge(2, 3, false);
+    triangulator.addEdge(3, 0, false);
 
     // And its diagonal
-    triangulator.addEdge(0, 2);
+    triangulator.addEdge(0, 2, false);
 
     auto opposingVertices = triangulator.getOpposingVerticesToEdge({0, 2});
 
     CHECK(std::min(opposingVertices.first, *opposingVertices.second) == 1);
     CHECK(std::max(opposingVertices.first, *opposingVertices.second) == 3);
 
-    CHECK_THROWS(triangulator.getOpposingVerticesToEdge({0, 1}));
+    CHECK(triangulator.getOpposingVerticesToEdge({0, 1}).second == std::nullopt);
 }
 
 TEST_CASE("DelaunayTriangulator::flipEdge")
@@ -92,13 +87,13 @@ TEST_CASE("DelaunayTriangulator::flipEdge")
                                                                            primitives::Point(0, 1)});
 
     // A square
-    triangulator.addEdge(0, 1);
-    triangulator.addEdge(1, 2);
-    triangulator.addEdge(2, 3);
-    triangulator.addEdge(3, 0);
+    triangulator.addEdge(0, 1, false);
+    triangulator.addEdge(1, 2, false);
+    triangulator.addEdge(2, 3, false);
+    triangulator.addEdge(3, 0, false);
 
     // And its diagonal
-    triangulator.addEdge(0, 2);
+    triangulator.addEdge(0, 2, false);
 
     triangulator.flipEdge({0, 2});
 
