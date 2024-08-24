@@ -4,35 +4,34 @@
 #include "primitives/point.hpp"
 
 #include <vector>
+#include <random>
+#include <iostream>
 
 using namespace primitives;
 
 TEST_CASE("Circumcircle")
 {
-    Point a(-1., 0.);
-    Point b(1., 0.);
-    std::vector<Point> cPoints{Point(0., 1.),
-                               Point(0., .5),
-                               Point(0., .1),
-                               Point(0., -1.),
-                               Point(-.5, .1),
-                               Point(-.5, .5),
-                               Point(-.5, 1.),
-                               Point(-1., .1),
-                               Point(-1., .5),
-                               Point(-1., 1.),
-                               Point(1., .1),
-                               Point(1., .5),
-                               Point(1., 1.)
-                               };
-    
-    for (auto c : cPoints)
-    {
-        Circle circle(a, b, c);
-        
-        CHECK(std::abs(circle.getCenter().distance(a) - circle.getRadius()) < 1e-8);
-        CHECK(std::abs(circle.getCenter().distance(b) - circle.getRadius()) < 1e-8);
-        CHECK(std::abs(circle.getCenter().distance(c) - circle.getRadius()) < 1e-8);
-    }
+    std::mt19937 gen(9876543210);
+    std::uniform_real_distribution<double> xDist(-10, 10);
+    std::uniform_real_distribution<double> yDist(-10, 10);
+    std::uniform_real_distribution<double> radiusDist(.01, 10);
+    std::uniform_real_distribution<double> angleDist(0, 2 * M_PI);
 
+    for (int i = 0; i < 100; ++i)
+    {
+        Point center(xDist(gen), yDist(gen));
+        double radius = radiusDist(gen);
+        double angle1 = angleDist(gen);
+        double angle2 = angleDist(gen);
+        double angle3 = angleDist(gen);
+
+        Point p1 = center + Point(radius * cos(angle1), radius * sin(angle1));
+        Point p2 = center + Point(radius * cos(angle2), radius * sin(angle2));
+        Point p3 = center + Point(radius * cos(angle3), radius * sin(angle3));
+
+        Circle circ(p1, p2, p3);
+
+        CHECK(circ.getCenter().distance(center) < 0.01);
+        CHECK(std::abs(circ.getRadius() - radius) < 0.01);
+    }
 }

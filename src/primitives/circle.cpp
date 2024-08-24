@@ -26,8 +26,10 @@ Circle::Circle(Point p1, Point p2, Point p3)
     {
         throw std::runtime_error("Cannot construct circle from collinear points.");
     }
-    m_center = Point(Sx / a, Sy / a);
-    m_radius = std::sqrt(b / a + m_center.squareNorm());
+
+    double aReciprocal = 1 / a;
+    m_center = Point(Sx * aReciprocal, Sy * aReciprocal);
+    m_radius = std::sqrt(b * aReciprocal + m_center.squareNorm());
 }
 
 bool Circle::contains(const Point& point) const

@@ -19,11 +19,14 @@ struct Point
     double squareNorm() const;
     double norm() const;
 
+    Point operator+(const Point& otherPoint);
+
     double m_x;
     double m_y;
 };
 
 bool operator<(const Point& lhs, const Point& rhs);
+
 
 std::ostream& operator<<(std::ostream& ost, const Point& point);
 

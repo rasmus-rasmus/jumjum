@@ -43,4 +43,10 @@ std::ostream& operator<<(std::ostream& ost, const Point& point)
     return ost << "Point: [" << point.x() << ", " << point.y() << "]";
 }
 
+Point Point::operator+(const Point& otherPoint)
+{
+    return Point(m_x + otherPoint.x(), m_y + otherPoint.y());
+}
+
+
 } //namespace primitives
