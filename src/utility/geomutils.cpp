@@ -1,5 +1,7 @@
 #include "utility/geomutils.hpp"
 
+#include <algorithm>
+
 namespace utility
 {
 

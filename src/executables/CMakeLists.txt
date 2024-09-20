@@ -15,7 +15,8 @@ set(UNIT_TEST_SOURCES
     unittests/point.test.cpp
     unittests/circle.test.cpp
     unittests/events.test.cpp
-    unittests/triangulation.test.cpp)
+    unittests/triangulation.test.cpp
+    unittests/triangle.test.cpp)
 
 set(CORRECTNESS_TEST_SOURCES
     correctnesstests/planesweep.test.cpp)

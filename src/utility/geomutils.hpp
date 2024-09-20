@@ -8,7 +8,6 @@
 namespace utility
 {
 
-
 glm::dmat2 getRotationMatrix(double angle);
 
 glm::dvec2 toGLM(const primitives::Point& point);

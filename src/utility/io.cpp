@@ -1,6 +1,7 @@
 #include "io.hpp"
 
 #include <fstream>
+#include <array>
 
 namespace utility
 {

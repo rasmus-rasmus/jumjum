@@ -4,6 +4,7 @@
 #include <glm/vec2.hpp>
 
 #include <fstream>
+#include <algorithm>
 
 namespace algorithms
 {

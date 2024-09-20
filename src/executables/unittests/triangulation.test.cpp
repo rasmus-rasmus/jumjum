@@ -4,6 +4,8 @@
 #include "primitives/point.hpp"
 #include "utility/io.hpp"
 
+#include <algorithm>
+
 
 using namespace algorithms;
 
