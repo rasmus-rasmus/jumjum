@@ -46,3 +46,25 @@ TEST_CASE("TriangleSearchHierarchy::add")
     CHECK(currChild->children.size() == 1);
     CHECK(*currChild->children[0] == otherChild);
 }
+
+TEST_CASE("TriangleSearchHierarchy::getContainingLeafTriangle")
+{
+    primitives::Triangle root(primitives::Point(-1, 0), primitives::Point(1, 0), primitives::Point(0, 1));
+    primitives::Triangle intermediate1(primitives::Point(-1, 0), primitives::Point(0, 0), primitives::Point(0, 1));
+    primitives::Triangle intermediate2(primitives::Point(0, 0), primitives::Point(1, 0), primitives::Point(0, 1));
+    primitives::Triangle leaf1(primitives::Point(-.5, .5), primitives::Point(.5, .5), primitives::Point(0, 1));
+    primitives::Triangle leaf2(primitives::Point(-.5, .5), primitives::Point(.5, .5), primitives::Point(0, .25));
+
+    TriangleSearchHierarchyTest triSearch(root);
+    triSearch.add(intermediate1, {root});
+    triSearch.add(intermediate2, {root});
+    triSearch.add(leaf1, {intermediate1, intermediate2});
+    triSearch.add(leaf2, {intermediate1, intermediate2});
+
+    auto containingTri1 = triSearch.getContainingLeafTriangle(primitives::Point(0, .75));
+    auto containingTri2 = triSearch.getContainingLeafTriangle(primitives::Point(0, .3));
+
+    CHECK(containingTri1 == leaf1);
+    CHECK(containingTri2 == leaf2);
+    CHECK_THROWS(triSearch.getContainingLeafTriangle(primitives::Point(0, .1)));
+}

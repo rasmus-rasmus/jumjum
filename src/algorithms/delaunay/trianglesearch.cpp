@@ -1,5 +1,7 @@
 #include "trianglesearch.hpp"
 
+#include <stack>
+
 namespace algorithms
 {
 
@@ -28,6 +30,35 @@ void TriangleSearchHierarchy::add(primitives::Triangle triangleToAdd, const std:
         parent.children.push_back(&*insertedTriangle);
         triangles.insert(parentErased, parent);
     }
+}
+
+primitives::Triangle TriangleSearchHierarchy::getContainingLeafTriangle(primitives::Point point) const
+{
+    if (!root->contains(point))
+    {
+        throw std::logic_error("Root triangle doesn't contain point, so no triangle does.");
+    }
+
+    std::stack<SearchTriangle> unprocessed;
+    unprocessed.push(*root);
+
+    while (!unprocessed.empty())
+    {
+        auto currTriangle = unprocessed.top();
+        unprocessed.pop();
+
+        if (currTriangle.children.empty()) return currTriangle;
+
+        for (auto child : currTriangle.children)
+        {
+            if (child->contains(point))
+            {
+                unprocessed.push(*child);
+            }
+        }
+    }
+
+    throw std::logic_error("Couldn't find containing leaf triangle.");
 }
 
 } // namespace algorithms

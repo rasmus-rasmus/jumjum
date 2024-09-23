@@ -16,16 +16,16 @@ struct TriangleSearchHierarchy
         std::vector<const SearchTriangle*> children;
     };
 
-    SearchTriangle getRoot() { return *root; }
-
     // "Root" is a bit misleading, since this search structure isn't actually a tree.
     // "Root" here just means "triangle containing all other triangles."
     TriangleSearchHierarchy(const primitives::Triangle& rootTriangle);
 
+    SearchTriangle getRoot() const { return *root; }
+
     void add(primitives::Triangle triangleToAdd, const std::vector<primitives::Triangle>& parents);
 
     // "Leaf" here just means childless.
-    primitives::Triangle getContainingLeafTriangle(primitives::Point point);
+    primitives::Triangle getContainingLeafTriangle(primitives::Point point) const;
 
 protected:
     std::set<SearchTriangle> triangles;
