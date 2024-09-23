@@ -7,7 +7,8 @@ set(PRIMITIVES_SOURCE_FILES
 set(ALGORITHMS_SOURCE_FILES
         algorithms/planesweep/events.cpp
         algorithms/planesweep/planesweep.cpp
-        algorithms/delaunay/triangulation.cpp)
+        algorithms/delaunay/triangulation.cpp
+        algorithms/delaunay/trianglesearch.cpp)
 
 set(UTILITY_SOURCE_FILES
         utility/geomutils.cpp

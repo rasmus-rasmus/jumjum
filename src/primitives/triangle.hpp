@@ -19,11 +19,15 @@ struct Triangle
 
     Circle getCircumcircle() const;
 
+    bool operator==(const Triangle& otherTri);
+
 private:
     Point m_p1;
     Point m_p2;
     Point m_p3;
 };
+
+bool operator<(const Triangle& lhs, const Triangle& rhs);
 
 } // namespace primitives
 

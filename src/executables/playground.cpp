@@ -51,26 +51,22 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
 
 int main()
 {
-    // Set working dir to project root.
-    auto currPath = std::filesystem::current_path();
-    int loopGuard = 10;
-    while((!std::filesystem::exists(currPath / "README.md") || !std::filesystem::exists(currPath / "LICENSE") || !std::filesystem::exists(currPath / "Makefile"))
-           && loopGuard)
+    std::set<int> mySet;
+
     {
-        currPath = currPath.parent_path();
-        --loopGuard;
+
+        int myInt(666);
+
+        mySet.insert(myInt);
+
+        auto insertedInt = mySet.find(myInt);
+
+        std::cout << "myInt: " << &myInt << " -- " << "insertedInt: " << &*insertedInt << std::endl;
     }
 
-    for (int i = 1; i <= 3; ++i)
-    {
-        std::string filename = "inputTriangulation" + std::to_string(i) + ".txt";
-        DelaunayTriangulatorTest triangulator;
-        utility::loadTriangulationFromFile(currPath / "src/executables/correctnesstests/testdata" / filename, triangulator);
-        std::cout << "isLegal: " << triangulator.isDelaunay() << std::endl;
-        auto numFlips = triangulator.legalizeEdges();
-        std::cout << "Number of flips: " << numFlips << std::endl;
-        std::cout << "isLegal: " << triangulator.isDelaunay() << std::endl;
-    }
+    auto foundInt = mySet.find(666);
+
+    std::cout << "foundInt: " << &*foundInt << std::endl;
     
     return 0;
 }
