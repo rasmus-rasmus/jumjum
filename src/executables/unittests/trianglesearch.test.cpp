@@ -7,7 +7,7 @@ using namespace algorithms;
 // Wrapper class to expose protected members.
 struct TriangleSearchHierarchyTest : TriangleSearchHierarchy
 {
-    std::set<SearchTriangle> getTriangles() { return triangles; }
+    ChildMap getTriangles() { return triangles; }
 };
 
 TEST_CASE("TriangleSearchHierarchy::add")
@@ -21,7 +21,7 @@ TEST_CASE("TriangleSearchHierarchy::add")
     auto triangles = triSearchHierarchy.getTriangles();
 
     CHECK(triangles.size() == 1);
-    CHECK(*triangles.begin() == root);
+    CHECK(triangles.begin()->first == root);
     CHECK(triSearchHierarchy.getRoot() == root);
 
     triSearchHierarchy.add(child, {root});
@@ -31,20 +31,20 @@ TEST_CASE("TriangleSearchHierarchy::add")
 
     CHECK(triangles.size() == 2);
     CHECK(currRoot == root);
-    CHECK(currRoot.children.size() == 1);
-    CHECK(*currRoot.children[0] == child);
+    CHECK(triangles.find(currRoot)->second.size() == 1);
+    CHECK(triangles.find(currRoot)->second[0] == child);
 
     triSearchHierarchy.add(otherChild, {root, child});
 
     triangles = triSearchHierarchy.getTriangles();
     currRoot = triSearchHierarchy.getRoot();
-    auto currChild = triangles.find(TriangleSearchHierarchyTest::SearchTriangle(child));
+    auto currChild = triangles.find(child)->first;
 
     CHECK(triangles.size() == 3);
     CHECK(currRoot == root);
-    CHECK(currRoot.children.size() == 2);
-    CHECK(currChild->children.size() == 1);
-    CHECK(*currChild->children[0] == otherChild);
+    CHECK(triangles.find(currRoot)->second.size() == 2);
+    CHECK(triangles.find(currChild)->second.size() == 1);
+    CHECK(triangles.find(currChild)->second[0] == otherChild);
 }
 
 TEST_CASE("TriangleSearchHierarchy::getContainingLeafTriangle")

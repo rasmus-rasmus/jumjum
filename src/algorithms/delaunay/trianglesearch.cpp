@@ -5,55 +5,54 @@
 namespace algorithms
 {
 
-TriangleSearchHierarchy::TriangleSearchHierarchy(const primitives::Triangle& rootTriangle)
+TriangleSearchHierarchy::TriangleSearchHierarchy(const primitives::Triangle& rootTriangle) : root(rootTriangle)
 {
-    triangles = {(SearchTriangle)rootTriangle};
-    root = triangles.begin();
+    triangles[rootTriangle] = {};
 }
 
 void TriangleSearchHierarchy::add(primitives::Triangle triangleToAdd, const std::vector<primitives::Triangle>& parents)
 {
-    auto insertedTriangle = triangles.insert((SearchTriangle)triangleToAdd).first;
+    if (triangles.find(triangleToAdd) != triangles.end())
+    {
+        throw std::logic_error("Triangle already in search hierarchy.");
+    }
+    triangles[triangleToAdd] = {};
 
     for (const auto& parentTri : parents)
     {
-        auto parentIt = triangles.find((SearchTriangle)parentTri);
+        auto parentIt = triangles.find(parentTri);
 
         if (parentIt == triangles.end())
         {
             throw std::logic_error("Couldn't find my parents. Wah wah wah.");
         }
         
-        auto parent = *parentIt;
-        auto parentErased = triangles.erase(parentIt);
-        
-        parent.children.push_back(&*insertedTriangle);
-        triangles.insert(parentErased, parent);
+        parentIt->second.push_back(triangleToAdd);
     }
 }
 
 primitives::Triangle TriangleSearchHierarchy::getContainingLeafTriangle(primitives::Point point) const
 {
-    if (!root->contains(point))
+    if (!root.contains(point))
     {
         throw std::logic_error("Root triangle doesn't contain point, so no triangle does.");
     }
 
-    std::stack<SearchTriangle> unprocessed;
-    unprocessed.push(*root);
+    std::stack<primitives::Triangle> unprocessed;
+    unprocessed.push(root);
 
     while (!unprocessed.empty())
     {
         auto currTriangle = unprocessed.top();
         unprocessed.pop();
 
-        if (currTriangle.children.empty()) return currTriangle;
+        if (triangles.find(currTriangle)->second.empty()) return currTriangle;
 
-        for (auto child : currTriangle.children)
+        for (auto child : triangles.find(currTriangle)->second)
         {
-            if (child->contains(point))
+            if (child.contains(point))
             {
-                unprocessed.push(*child);
+                unprocessed.push(child);
             }
         }
     }

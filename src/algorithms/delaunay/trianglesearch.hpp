@@ -4,23 +4,20 @@
 #include "primitives/triangle.hpp"
 
 #include <vector>
-#include <set>
+#include <map>
 
 namespace algorithms
 {
 
+using ChildMap = std::map<primitives::Triangle, std::vector<primitives::Triangle>>;
+
 struct TriangleSearchHierarchy
 {
-    struct SearchTriangle: primitives::Triangle
-    {
-        std::vector<const SearchTriangle*> children;
-    };
-
     // "Root" is a bit misleading, since this search structure isn't actually a tree.
     // "Root" here just means "triangle containing all other triangles."
     TriangleSearchHierarchy(const primitives::Triangle& rootTriangle);
 
-    SearchTriangle getRoot() const { return *root; }
+    primitives::Triangle getRoot() const { return root; }
 
     void add(primitives::Triangle triangleToAdd, const std::vector<primitives::Triangle>& parents);
 
@@ -28,8 +25,8 @@ struct TriangleSearchHierarchy
     primitives::Triangle getContainingLeafTriangle(primitives::Point point) const;
 
 protected:
-    std::set<SearchTriangle> triangles;
-    std::set<SearchTriangle>::iterator root;
+    ChildMap triangles;
+    primitives::Triangle root;
 };
 
 }

@@ -46,9 +46,8 @@ struct DelaunayTriangulator
     void writeTriangulationToFile(fs::path outPath) const;
 
     void addEdge(size_t v1, size_t v2, bool legalizeAfterInsertion = true);
+    
 protected:
-    // Use with care; will throw if used on exterior edges, i.e., edges which
-    // have only one opposing vertex.
     std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge) const;
     Edge flipEdge(Edge edge);
     int legalizeEdges();
