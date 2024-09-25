@@ -151,6 +151,7 @@ TEST_CASE("DelaunayTriangulator::flipEdge")
     CHECK(!triangulator.hasEdge(2, 0));
 }
 
+// Test data - and its expected output - found on the interweb...
 TEST_CASE("DelaunayTriangulator::legalizeEdges")
 {
     DelaunayTriangulatorTest triangulator1;

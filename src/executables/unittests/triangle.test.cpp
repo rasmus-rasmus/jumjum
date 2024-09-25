@@ -11,11 +11,13 @@ TEST_CASE("Triangle::contains")
     Point pointNotInTri(0.5, 0.6);
     Point pointOnEdge(.5, 0);
     Point pointOnVertex(1., 0.);
+    Point pointOnLineSpannedByVertex(2, 0);
     
 
     CHECK(tri.contains(pointInTri));
     CHECK(!tri.contains(pointNotInTri));
     CHECK(tri.contains(pointOnEdge));
     CHECK(tri.contains(pointOnVertex));
+    CHECK(!tri.contains(pointOnLineSpannedByVertex));
 }
 

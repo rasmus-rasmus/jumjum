@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-filename = '../src/executables/testdata/inputTriangulation1'
+filename = './debug/triangulation3'
 
 # Read the file
 with open(filename+'.txt', 'r') as file:

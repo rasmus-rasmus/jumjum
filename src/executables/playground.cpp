@@ -10,8 +10,6 @@
 #include "algorithms/delaunay/triangulation.hpp"
 #include "utility/io.hpp"
 
-// #include "executables/unittests/triangulation.test.cpp"
-
 using namespace algorithms;
 
 struct DelaunayTriangulatorTest : DelaunayTriangulator
@@ -51,22 +49,28 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
 
 int main()
 {
-    std::set<int> mySet;
-
+    std::vector<primitives::Point> points
     {
+        primitives::Point(0, 1),
+        primitives::Point(2, 0),
+        primitives::Point(-2, 0),
+        primitives::Point(0, -1)
+    };
 
-        int myInt(666);
-
-        mySet.insert(myInt);
-
-        auto insertedInt = mySet.find(myInt);
-
-        std::cout << "myInt: " << &myInt << " -- " << "insertedInt: " << &*insertedInt << std::endl;
+    DelaunayTriangulatorTest triangulator(points);
+    try
+    {
+        triangulator.performTriangulation();
     }
-
-    auto foundInt = mySet.find(666);
-
-    std::cout << "foundInt: " << &*foundInt << std::endl;
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        std::cerr << "Writing bad triangulation to file." << std::endl;
+        utility::writeTriangulationToFile(triangulator, utility::getProjectRootPath()/"debug/badTriangulation.txt");
+    }
+    
+    std::cout << "Writing good triangulation to file." << std::endl;
+    utility::writeTriangulationToFile(triangulator, utility::getProjectRootPath()/"debug/goodTriangulation.txt");
     
     return 0;
 }

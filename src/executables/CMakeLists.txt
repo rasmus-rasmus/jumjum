@@ -20,7 +20,8 @@ set(UNIT_TEST_SOURCES
     unittests/trianglesearch.test.cpp)
 
 set(CORRECTNESS_TEST_SOURCES
-    correctnesstests/planesweep.test.cpp)
+    correctnesstests/planesweep.test.cpp
+    correctnesstests/triangulation.test.cpp)
 
 add_executable(test test.cpp ${UNIT_TEST_SOURCES}
                              ${CORRECTNESS_TEST_SOURCES})

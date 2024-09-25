@@ -1,10 +1,12 @@
 #include "triangulation.hpp"
 #include "utility/geomutils.hpp"
+#include "trianglesearch.hpp"
 
 #include <glm/vec2.hpp>
 
 #include <fstream>
 #include <algorithm>
+#include <iostream>
 
 namespace algorithms
 {
@@ -14,6 +16,10 @@ void DelaunayTriangulator::addEdge(size_t v1, size_t v2, bool legalizeAfterInser
     if (v1 == v2)
     {
         throw std::invalid_argument("No degenerate edges allowed.");
+    }
+    if (v1 >= m_vertices.size() || v2 >= m_vertices.size())
+    {
+        throw std::invalid_argument("Vertex indicies out of range.");
     }
 
     auto v1Nbrs = m_edges.equal_range(v1);
@@ -39,7 +45,7 @@ void DelaunayTriangulator::addEdge(size_t v1, size_t v2, bool legalizeAfterInser
     }
 }
 
-std::pair<size_t, std::optional<size_t>> DelaunayTriangulator::getOpposingVerticesToEdge(Edge edge) const
+std::pair<size_t, std::optional<size_t>> DelaunayTriangulator::getOpposingVerticesToEdge(Edge edge, bool throwOnDegenerateTris) const
 {
     auto [startIt, endIt] = m_edges.equal_range(edge.second);
     if (startIt->first != edge.second)
@@ -69,7 +75,7 @@ std::pair<size_t, std::optional<size_t>> DelaunayTriangulator::getOpposingVertic
                 {
                     leftOrientedCandidates.push_back(currIt->first);
                 }
-                else
+                else if (throwOnDegenerateTris)
                 {
                     throw std::logic_error("Degenerate triangle found.");
                 }    
@@ -137,6 +143,21 @@ Edge DelaunayTriangulator::flipEdge(Edge edge)
     
     // Add new edge
     addEdge(newEndPoint0, *newEndPoint1, false);
+    if (searchHierarchy.has_value())
+    {
+        searchHierarchy->add
+        (
+            primitives::Triangle(m_vertices[newEndPoint0], m_vertices[*newEndPoint1], m_vertices[edge.first]), 
+            {primitives::Triangle(m_vertices[edge.first], m_vertices[edge.second], m_vertices[newEndPoint0]),
+             primitives::Triangle(m_vertices[edge.first], m_vertices[edge.second], m_vertices[*newEndPoint1])}
+        );
+        searchHierarchy->add
+        (
+            primitives::Triangle(m_vertices[newEndPoint0], m_vertices[*newEndPoint1], m_vertices[edge.second]), 
+            {primitives::Triangle(m_vertices[edge.first], m_vertices[edge.second], m_vertices[newEndPoint0]),
+             primitives::Triangle(m_vertices[edge.first], m_vertices[edge.second], m_vertices[*newEndPoint1])}
+        );
+    }
 
     return {newEndPoint0, *newEndPoint1};
 }
@@ -192,6 +213,83 @@ bool DelaunayTriangulator::isDelaunay() const
     return true;
 }
 
+bool DelaunayTriangulator::performTriangulation()
+{
+    if (m_vertices.size() < 3)
+    {
+        std::cerr << "Not enough points to triangulate." << std::endl;
+        return false;
+    }
+
+    m_edges.clear();
+
+    // NB: A bit crude. Should either find an abstract way to add a "point at infinity"
+    // or choose bounding root triangle based on extents of point cloud.
+    primitives::Point infinityPointNorth(0, 1e6);
+    primitives::Point infinityPointSouthWest(-1e6, -1e6);
+    primitives::Point infinityPointSouthEast(1e6, -1e6);
+    m_vertices.push_back(infinityPointNorth);
+    m_vertices.push_back(infinityPointSouthWest);
+    m_vertices.push_back(infinityPointSouthEast);
+    addEdge(m_vertices.size() - 3, m_vertices.size() - 2, false);
+    addEdge(m_vertices.size() - 2, m_vertices.size() - 1, false);
+    addEdge(m_vertices.size() - 1, m_vertices.size() - 3, false);
+
+    std::map<primitives::Point, size_t> pointToIdxMap;
+    for (size_t i = 0; i < m_vertices.size(); ++i)
+    {
+        pointToIdxMap[m_vertices[i]] = i;
+    }
+
+    primitives::Triangle root(infinityPointNorth, infinityPointSouthWest, infinityPointSouthEast);
+    searchHierarchy = TriangleSearchHierarchy(root);
+
+    try
+    {
+        for (size_t vIdx = 0; vIdx < m_vertices.size() - 3; ++vIdx)
+        {
+            auto vertex = m_vertices[vIdx];
+
+            const auto& containingTriangle = searchHierarchy->getContainingLeafTriangle(vertex);
+            std::vector<primitives::Point> triCorners{containingTriangle.getPoint1(), containingTriangle.getPoint2(), containingTriangle.getPoint3()};
+            for (int i = 0; i < 3; ++i)
+            {
+                auto corner = triCorners[i];
+                auto nextCorner = triCorners[(i+1) % 3];
+
+                addEdge(pointToIdxMap[vertex], pointToIdxMap[corner], false);
+                searchHierarchy->add(primitives::Triangle(vertex, corner, nextCorner), {containingTriangle});
+            }
+            legalizeEdges();
+        }
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Failed to triangulate points: \n" << e.what() << std::endl;
+        m_vertices.resize(m_vertices.size() - 3);
+        m_edges.clear();
+        searchHierarchy = std::nullopt;
+    }
+
+
+    m_vertices.resize(m_vertices.size() - 3);
+
+    for (auto it = m_edges.begin(); it != m_edges.end();)
+    {
+        if (it->first >= m_vertices.size() || it->second >= m_vertices.size())
+        {
+            it = m_edges.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    searchHierarchy = std::nullopt;
+    
+    return true;
+}
 
 
 } // namespace algorithms

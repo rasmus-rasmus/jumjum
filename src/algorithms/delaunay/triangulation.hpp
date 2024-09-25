@@ -30,7 +30,7 @@ struct DelaunayTriangulator
     DelaunayTriangulator() = default;
     DelaunayTriangulator(std::vector<primitives::Point> points) : m_vertices(points) {}
 
-    void performTriangulation();
+    bool performTriangulation();
 
     bool isDelaunay() const;
     int legalizeEdges();
@@ -39,9 +39,11 @@ struct DelaunayTriangulator
     const std::multimap<size_t, size_t>& getEdges() const { return m_edges; };
     
 protected:
-    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge) const;
+    // Utility stuff
+    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge, bool throwOnDegenerateTris = true) const;
     void addEdge(size_t v1, size_t v2, bool legalizeAfterInsertion = true);
     Edge flipEdge(Edge edge);
+    std::optional<TriangleSearchHierarchy> searchHierarchy;
 
     std::vector<primitives::Point> m_vertices;
     std::multimap<size_t, size_t> m_edges;

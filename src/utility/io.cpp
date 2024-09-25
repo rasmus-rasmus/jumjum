@@ -40,9 +40,9 @@ struct DelaunayTriangulatorIO : algorithms::DelaunayTriangulator
         DelaunayTriangulator::addEdge(v1, v2, legalizeAfterInsertion);
     }
 
-    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(algorithms::Edge edge) const
+    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(algorithms::Edge edge, bool throwOnDegenerateTris = true) const
     {
-        return DelaunayTriangulator::getOpposingVerticesToEdge(edge);
+        return DelaunayTriangulator::getOpposingVerticesToEdge(edge, throwOnDegenerateTris);
     }
 };
 
@@ -117,7 +117,7 @@ void writeTriangulationToFile(const algorithms::DelaunayTriangulator& triangulat
     std::set<std::set<size_t>> triangles;
     for (const auto& [v1, v2] : newTriangulation.getEdges())
     {
-        auto [opposingV1, opposingV2] = newTriangulation.getOpposingVerticesToEdge({v1, v2});
+        auto [opposingV1, opposingV2] = newTriangulation.getOpposingVerticesToEdge({v1, v2}, false);
         triangles.insert({v1, v2, opposingV1});
         if (opposingV2.has_value())
         {

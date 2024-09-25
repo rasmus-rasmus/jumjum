@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <vector>
+#include <set>
 #include <algorithm>
 
 namespace primitives
@@ -26,7 +27,13 @@ bool Triangle::contains(const Point& point) const
 
     if (ab.z == 0 || bc.z == 0 || ca.z == 0)
     {
-        return true;
+        // If one of the orientations is 0, it means that the point lies on the line spanned 
+        // by one (or more in which case it coincides with a vertex) of the edges. It then
+        // actually lies on that edge, and thus is contained in the triangle, if and only if
+        // the two remaining orientations have the same sign.
+        std::set<double> orientations{ab.z, bc.z, ca.z};
+
+        return orientations.size() <= 2 || *(++orientations.begin()) != 0;
     }
 
     return ab.z * bc.z > 0 && bc.z * ca.z > 0;
