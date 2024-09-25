@@ -25,6 +25,11 @@ struct DelaunayTriangulatorTest : DelaunayTriangulator
         return DelaunayTriangulator::flipEdge(edge);
     }
 
+    void addEdge(size_t v1, size_t v2, bool legalizeAfterInsertion = true)
+    {
+        DelaunayTriangulator::addEdge(v1, v2, legalizeAfterInsertion);
+    }
+
     // Helper function for test purposes.
     bool hasEdge(size_t v1, size_t v2) const
     {

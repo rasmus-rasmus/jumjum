@@ -3,6 +3,7 @@
 
 #include "primitives/point.hpp"
 #include "primitives/triangle.hpp"
+#include "trianglesearch.hpp"
 
 #include <vector>
 #include <map>
@@ -29,28 +30,18 @@ struct DelaunayTriangulator
     DelaunayTriangulator() = default;
     DelaunayTriangulator(std::vector<primitives::Point> points) : m_vertices(points) {}
 
+    void performTriangulation();
+
     bool isDelaunay() const;
+    int legalizeEdges();
 
-    // Writes triangulation to file in the following format:
-    // <numPoints> <numTris>
-    // 0 <point0.x> <point0.y>
-    // 1 <point1.x> <point1.y>
-    // ...
-    // <numPoints-1> <point(numPoints-1).x> <point(numPoints-1).y>
-    // <tri0.v0> <tri0.v1> <tri0.v2>
-    // <tri1.v0> <tri1.v1> <tri1.v2>
-    // ...
-    // <tri(numTris-1).v0> <tri(numTris-1).v1> <tri(numTris-1).v2>
-    //
-    // where v0, v1 and v2 are indices of vertices in the point list.
-    void writeTriangulationToFile(fs::path outPath) const;
-
-    void addEdge(size_t v1, size_t v2, bool legalizeAfterInsertion = true);
+    const std::vector<primitives::Point>& getVertices() const { return m_vertices; };
+    const std::multimap<size_t, size_t>& getEdges() const { return m_edges; };
     
 protected:
     std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge) const;
+    void addEdge(size_t v1, size_t v2, bool legalizeAfterInsertion = true);
     Edge flipEdge(Edge edge);
-    int legalizeEdges();
 
     std::vector<primitives::Point> m_vertices;
     std::multimap<size_t, size_t> m_edges;

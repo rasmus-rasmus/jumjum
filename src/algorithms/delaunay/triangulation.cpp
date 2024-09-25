@@ -192,37 +192,6 @@ bool DelaunayTriangulator::isDelaunay() const
     return true;
 }
 
-void DelaunayTriangulator::writeTriangulationToFile(fs::path outPath) const
-{
-    std::ofstream oStream(outPath);
-    if (!oStream.is_open())
-    {
-        throw std::runtime_error("Could not open file for writing.");
-    }
 
-    std::set<std::set<size_t>> triangles;
-    for (const auto& [v1, v2] : m_edges)
-    {
-        auto [opposingV1, opposingV2] = getOpposingVerticesToEdge({v1, v2});
-        triangles.insert({v1, v2, opposingV1});
-        if (opposingV2.has_value())
-        {
-            triangles.insert({v1, v2, *opposingV2});
-        }
-    }
-    
-    oStream << m_vertices.size() << " " << triangles.size() << std::endl;
-
-    for (auto vIdx = 0; vIdx < m_vertices.size(); ++vIdx)
-    {
-        oStream << vIdx << " " << m_vertices[vIdx].x() << " " << m_vertices[vIdx].y() << std::endl;
-    }
-    for (const auto& tri : triangles)
-    {
-        oStream << *tri.begin() << " " << *(++tri.begin()) << " " << *(++(++tri.begin())) << std::endl;
-    }
-
-    oStream.close();
-}
 
 } // namespace algorithms
