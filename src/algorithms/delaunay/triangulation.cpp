@@ -162,7 +162,7 @@ Edge DelaunayTriangulator::flipEdge(Edge edge)
     return {newEndPoint0, *newEndPoint1};
 }
 
-int DelaunayTriangulator::legalizeEdges()
+int DelaunayTriangulator::legalizeEdges(std::vector<Edge> legalizationCandidates)
 {
     int numLegalizedEdges = 0;
     std::set<Edge> edgesToLegalize;
@@ -175,10 +175,19 @@ int DelaunayTriangulator::legalizeEdges()
             edgesToLegalize.insert({std::min(edge.first, edge.second), std::max(edge.first, edge.second)});
         }
     };
-
-    for (const auto& [v1, v2] : m_edges)
+    if (legalizationCandidates.empty())
     {
-        insertEdgeIfNotLegal({v1, v2});
+        for (const auto& [v1, v2] : m_edges)
+        {
+            insertEdgeIfNotLegal({v1, v2});
+        }
+    }
+    else
+    {
+        for (const auto& edge : legalizationCandidates)
+        {
+            insertEdgeIfNotLegal(edge);
+        }
     }
 
     while (!edgesToLegalize.empty())
@@ -252,15 +261,17 @@ bool DelaunayTriangulator::performTriangulation()
 
             const auto& containingTriangle = searchHierarchy->getContainingLeafTriangle(vertex);
             std::vector<primitives::Point> triCorners{containingTriangle.getPoint1(), containingTriangle.getPoint2(), containingTriangle.getPoint3()};
+            std::vector<Edge> edgesToLegalize;
             for (int i = 0; i < 3; ++i)
             {
                 auto corner = triCorners[i];
                 auto nextCorner = triCorners[(i+1) % 3];
+                edgesToLegalize.push_back({pointToIdxMap[corner], pointToIdxMap[nextCorner]});
 
                 addEdge(pointToIdxMap[vertex], pointToIdxMap[corner], false);
                 searchHierarchy->add(primitives::Triangle(vertex, corner, nextCorner), {containingTriangle});
             }
-            legalizeEdges();
+            legalizeEdges(edgesToLegalize);
         }
     }
     catch (const std::exception& e)
@@ -269,6 +280,8 @@ bool DelaunayTriangulator::performTriangulation()
         m_vertices.resize(m_vertices.size() - 3);
         m_edges.clear();
         searchHierarchy = std::nullopt;
+
+        return false;
     }
 
 

@@ -23,6 +23,10 @@ TEST_CASE("Delaunay Triangulator correctness")
     CHECK(triangulator2.performTriangulation());
     CHECK(triangulator3.performTriangulation());
 
+    CHECK(triangulator1.getEdges().size() >= triangulator1.getVertices().size());
+    CHECK(triangulator2.getEdges().size() >= triangulator2.getVertices().size());
+    CHECK(triangulator3.getEdges().size() >= triangulator3.getVertices().size());
+
     // Maybe a bit ><>'y to use the class' own method to test for its correctness...
     CHECK(triangulator1.isDelaunay());
     CHECK(triangulator2.isDelaunay());

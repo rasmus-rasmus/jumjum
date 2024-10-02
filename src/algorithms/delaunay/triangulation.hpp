@@ -33,7 +33,7 @@ struct DelaunayTriangulator
     bool performTriangulation();
 
     bool isDelaunay() const;
-    int legalizeEdges();
+    int legalizeEdges(std::vector<Edge> legalizationCandidates = {});
 
     const std::vector<primitives::Point>& getVertices() const { return m_vertices; };
     const std::multimap<size_t, size_t>& getEdges() const { return m_edges; };
