@@ -1,76 +1,72 @@
+#include <iostream>
+#include "algorithms/planesweep/planesweep.hpp"
+
 #include <set>
 #include <algorithm>
 #include <filesystem>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
-#include "primitives/point.hpp"
-#include "primitives/triangle.hpp"
-#include "algorithms/delaunay/triangulation.hpp"
-#include "utility/io.hpp"
 
 using namespace algorithms;
 
-struct DelaunayTriangulatorTest : DelaunayTriangulator
-{
-
-    DelaunayTriangulatorTest() : DelaunayTriangulator(std::vector<primitives::Point>()) {}
-    DelaunayTriangulatorTest(std::vector<primitives::Point> points) : DelaunayTriangulator(points) {}
-    std::pair<size_t, std::optional<size_t>> getOpposingVerticesToEdge(Edge edge)
-    {
-        return DelaunayTriangulator::getOpposingVerticesToEdge(edge);
-    }
-
-    void addEdge(size_t v1, size_t v2)
-    {
-        return DelaunayTriangulator::addEdge(v1, v2);
-    }
-
-    Edge flipEdge(Edge edge)
-    {
-        return DelaunayTriangulator::flipEdge(edge);
-    }
-
-    int legalizeEdges()
-    {
-        return DelaunayTriangulator::legalizeEdges();
-    }
-
-    // Helper function for test purposes.
-    bool hasEdge(size_t v1, size_t v2)
-    {
-        auto v1Nbrs = m_edges.equal_range(v1);
-        return std::find_if(v1Nbrs.first, v1Nbrs.second, 
-                            [v2](const std::pair<size_t, size_t>& edge) { return edge.second == v2; }) 
-               != v1Nbrs.second;
-    }
-};
-
 int main()
 {
-    std::vector<primitives::Point> points
-    {
-        primitives::Point(0, 1),
-        primitives::Point(2, 0),
-        primitives::Point(-2, 0),
-        primitives::Point(0, -1)
-    };
+    std::vector<primitives::LineSegment> lines = {
+                                                    primitives::LineSegment(primitives::Point(0., .1), primitives::Point(1., -.1)), 
+                                                    primitives::LineSegment(primitives::Point(0, .5), primitives::Point(0, -.5)),
+                                                    primitives::LineSegment(primitives::Point(.5, .5), primitives::Point(.5, -.5)),
+                                                    primitives::LineSegment(primitives::Point(1., .5), primitives::Point(1., -.5))
+                                                 };
 
-    DelaunayTriangulatorTest triangulator(points);
-    try
+    Planesweep algo(lines);
+
+    auto intersections = algo.perform(true);
+
+    std::cout << intersections.size() << std::endl;
+
+    for (auto inter : intersections)
     {
-        triangulator.performTriangulation();
+        std::cout << "Intersection between lines "
+                  << "["
+                  << inter.first.getStartPoint() << " -> " << inter.first.getEndPoint()
+                  << "]"
+                  << " and "
+                  << "["
+                  << inter.second.getStartPoint() << " -> " << inter.second.getEndPoint()
+                  << "]"
+                  << " is: "
+                  << std::get<primitives::Point>(inter.first.computeIntersection(inter.second))
+                  << std::endl;
     }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-        std::cerr << "Writing bad triangulation to file." << std::endl;
-        utility::writeTriangulationToFile(triangulator, utility::getProjectRootPath()/"debug/badTriangulation.txt");
-    }
-    
-    std::cout << "Writing good triangulation to file." << std::endl;
-    utility::writeTriangulationToFile(triangulator, utility::getProjectRootPath()/"debug/goodTriangulation.txt");
-    
+
+    // primitives::LineSegment firstLine(primitives::Point(580., 716.), primitives::Point(271., 427.));
+    // primitives::LineSegment secondLine(primitives::Point(439., 750.), primitives::Point(850., 558.));
+    // primitives::LineSegment problematicLine(primitives::Point(703., 692.), primitives::Point(2., 675.));
+
+    // std::vector<primitives::LineSegment> lines = {firstLine, secondLine, problematicLine};
+
+    // Planesweep algo(lines);
+
+    // auto intersections = algo.perform();
+
+    // for (auto inter : intersections)
+    // {
+    //     std::cout << "Intersection between lines "
+    //               << "["
+    //               << inter.first.getStartPoint() << " -> " << inter.first.getEndPoint()
+    //               << "]"
+    //               << " and "
+    //               << "["
+    //               << inter.second.getStartPoint() << " -> " << inter.second.getEndPoint()
+    //               << "]"
+    //               << " is: "
+    //               << std::get<primitives::Point>(inter.first.computeIntersection(inter.second))
+    //               << std::endl;
+    // }
+
+    // std::cout << std::get<primitives::Point>(firstLine.computeIntersection(secondLine)) << std::endl;
+    // std::cout << std::get<primitives::Point>(firstLine.computeIntersection(problematicLine)) << std::endl;
+    // std::cout << std::get<primitives::Point>(secondLine.computeIntersection(problematicLine)) << std::endl;
+    // std::cout << (std::get<primitives::Point>(firstLine.computeIntersection(secondLine)) < std::get<primitives::Point>(firstLine.computeIntersection(problematicLine)))
+    //               << std::endl;
+
     return 0;
 }
