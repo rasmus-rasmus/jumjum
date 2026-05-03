@@ -23,9 +23,9 @@ set(CORRECTNESS_TEST_SOURCES
     correctnesstests/planesweep.test.cpp
     correctnesstests/triangulation.test.cpp)
 
-add_executable(test test.cpp ${UNIT_TEST_SOURCES}
+add_executable(jumjum-test test.cpp ${UNIT_TEST_SOURCES}
                              ${CORRECTNESS_TEST_SOURCES})
 
-target_include_directories(test PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(jumjum-test PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
-target_link_libraries(test PUBLIC jumjum-geom)
+target_link_libraries(jumjum-test PUBLIC jumjum-geom)
