@@ -21,3 +21,4 @@ add_library(jumjum-geom ${PRIMITIVES_SOURCE_FILES}
 target_include_directories(jumjum-geom PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 add_subdirectory(executables)
+

@@ -1,10 +1,11 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install cmake build-essential clang \
+    && apt-get -y --no-install-recommends install cmake build-essential clang libglm-dev \
     && rm -rf /var/lib/apt/lists/*
+
 
 WORKDIR /home/jumjum
 COPY src/ src/
