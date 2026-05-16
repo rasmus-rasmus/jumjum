@@ -61,7 +61,7 @@ bool Polygon::contains(const Point& point)
 
         double verMaxX = std::max(edge.getStartPoint().x(), edge.getEndPoint().x());
         if (verMaxX < point.x()) continue;
-        auto raySegment = LineSegment(point, Point(verMaxX + std::abs(verMaxX), point.y()));
+        auto raySegment = LineSegment(point, Point(verMaxX + std::abs(verMaxX) + 16, point.y()));
 
         if (raySegment.intersects(edge))
         {
@@ -72,4 +72,4 @@ bool Polygon::contains(const Point& point)
     return windingNumber != 0;
 }
 
-}
+} // namespace primitives

@@ -17,7 +17,8 @@ set(UNIT_TEST_SOURCES
     unittests/events.test.cpp
     unittests/triangulation.test.cpp
     unittests/triangle.test.cpp
-    unittests/trianglesearch.test.cpp)
+    unittests/trianglesearch.test.cpp
+    unittests/polygon.test.cpp)
 
 set(CORRECTNESS_TEST_SOURCES
     correctnesstests/planesweep.test.cpp

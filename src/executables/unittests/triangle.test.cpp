@@ -20,13 +20,5 @@ TEST_CASE("Triangle::contains")
     CHECK(tri.contains(pointOnEdge));
     CHECK(tri.contains(pointOnVertex));
     CHECK(!tri.contains(pointOnLineSpannedByVertex));
-    
-    // Hacky way to smoke test polygon logic
-    Polygon pol({tri.getPoint1(), tri.getPoint2(), tri.getPoint3()});
-    CHECK(pol.contains(pointInTri));
-    CHECK(!pol.contains(pointNotInTri));
-    CHECK(pol.contains(pointOnEdge));
-    CHECK(pol.contains(pointOnVertex));
-    CHECK(!pol.contains(pointOnLineSpannedByVertex));
 }
 

@@ -60,7 +60,7 @@ LineSegment::LineSegment(const Point& startPoint, const Point& endPoint)
 {
     if (startPoint.squareDistance(endPoint) < 1e-6)
     {
-        throw std::logic_error("Degenerate line segment.");
+        throw std::logic_error("Degenerate line segment; start and end points too close.");
     }
 
         m_startPoint = startPoint;
@@ -71,7 +71,7 @@ void LineSegment::setStartPoint(const Point& startPoint)
 {
     if (startPoint.squareDistance(m_endPoint) < 1e-6)
     {
-        throw std::logic_error("Degenerate line segment.");
+        throw std::logic_error("Degenerate line segment; new start point too close to end point.");
     }
     m_startPoint = startPoint;
 }
@@ -80,7 +80,7 @@ void LineSegment::setEndPoint(const Point& endPoint)
 {
     if (m_startPoint.squareDistance(endPoint) < 1e-6)
     {
-        throw std::logic_error("Degenerate line segment.");
+        throw std::logic_error("Degenerate line segment; new end point too close to start point.");
     }
     m_endPoint = endPoint;
 }
