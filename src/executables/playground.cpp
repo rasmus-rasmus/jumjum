@@ -1,41 +1,45 @@
 #include <iostream>
-#include "algorithms/planesweep/planesweep.hpp"
+#include "primitives/triangle.hpp"
+#include "primitives/polygon.hpp"
+#include "primitives/point.hpp"
 
 #include <set>
 #include <algorithm>
 #include <filesystem>
 
-using namespace algorithms;
+using namespace primitives;
 
 int main()
 {
-    std::vector<primitives::LineSegment> lines = {
-                                                    primitives::LineSegment(primitives::Point(0., .1), primitives::Point(1., -.1)), 
-                                                    primitives::LineSegment(primitives::Point(0, .5), primitives::Point(0, -.5)),
-                                                    primitives::LineSegment(primitives::Point(.5, .5), primitives::Point(.5, -.5)),
-                                                    primitives::LineSegment(primitives::Point(1., .5), primitives::Point(1., -.5))
-                                                 };
+    primitives::Triangle tri(Point(0, 0), Point(1, 0), Point(0, 1));
+    primitives::Polygon pol({tri.getPoint1(), tri.getPoint2(), tri.getPoint3()});
+    // std::vector<primitives::LineSegment> lines = {
+    //                                                 primitives::LineSegment(primitives::Point(0., .1), primitives::Point(1., -.1)), 
+    //                                                 primitives::LineSegment(primitives::Point(0, .5), primitives::Point(0, -.5)),
+    //                                                 primitives::LineSegment(primitives::Point(.5, .5), primitives::Point(.5, -.5)),
+    //                                                 primitives::LineSegment(primitives::Point(1., .5), primitives::Point(1., -.5))
+    //                                              };
 
-    Planesweep algo(lines);
+    // Planesweep algo(lines);
 
-    auto intersections = algo.perform(true);
+    // auto intersections = algo.perform(true);
 
-    std::cout << intersections.size() << std::endl;
+    // std::cout << intersections.size() << std::endl;
 
-    for (auto inter : intersections)
-    {
-        std::cout << "Intersection between lines "
-                  << "["
-                  << inter.first.getStartPoint() << " -> " << inter.first.getEndPoint()
-                  << "]"
-                  << " and "
-                  << "["
-                  << inter.second.getStartPoint() << " -> " << inter.second.getEndPoint()
-                  << "]"
-                  << " is: "
-                  << std::get<primitives::Point>(inter.first.computeIntersection(inter.second))
-                  << std::endl;
-    }
+    // for (auto inter : intersections)
+    // {
+    //     std::cout << "Intersection between lines "
+    //               << "["
+    //               << inter.first.getStartPoint() << " -> " << inter.first.getEndPoint()
+    //               << "]"
+    //               << " and "
+    //               << "["
+    //               << inter.second.getStartPoint() << " -> " << inter.second.getEndPoint()
+    //               << "]"
+    //               << " is: "
+    //               << std::get<primitives::Point>(inter.first.computeIntersection(inter.second))
+    //               << std::endl;
+    // }
 
     // primitives::LineSegment firstLine(primitives::Point(580., 716.), primitives::Point(271., 427.));
     // primitives::LineSegment secondLine(primitives::Point(439., 750.), primitives::Point(850., 558.));

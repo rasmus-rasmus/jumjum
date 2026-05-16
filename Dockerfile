@@ -11,5 +11,7 @@ WORKDIR /home/jumjum
 COPY src/ src/
 COPY scripts/build.sh scripts/build.sh
 COPY CMakeLists.txt .
+COPY README.md .
 
 RUN ./scripts/build.sh
+ENTRYPOINT ["./build/src/executables/jumjum-test"]

@@ -3,13 +3,20 @@
 
 #include "point.hpp"
 
-#include <stdexcept>
 #include <variant>
 #include <glm/vec2.hpp>
 
 
 namespace primitives
 {
+
+
+enum Orientation
+{
+    Left = -1,
+    On,
+    Right,
+};
 
 struct LineSegment;
 using LineLineIntersection = std::variant<std::monostate, Point, LineSegment>;
@@ -45,6 +52,10 @@ private:
 bool operator==(const LineSegment& lhs, const LineSegment& rhs);
 
 std::ostream& operator<<(std::ostream& ost, const LineSegment& lineSegment);
+
+Orientation getOrientation(const Point& point, const LineSegment& line);
+
+Point projectPointOnLine(const Point& point, const LineSegment& line, double* paramOut = nullptr);
 
 } // namespace primitives
 

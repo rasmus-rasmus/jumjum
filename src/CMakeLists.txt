@@ -2,7 +2,8 @@ set(PRIMITIVES_SOURCE_FILES
         primitives/point.cpp
         primitives/linesegment.cpp
         primitives/circle.cpp
-        primitives/triangle.cpp)
+        primitives/triangle.cpp
+        primitives/polygon.cpp)
 
 set(ALGORITHMS_SOURCE_FILES
         algorithms/planesweep/events.cpp

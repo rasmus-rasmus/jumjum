@@ -11,12 +11,6 @@ namespace primitives
 {
 
 
-enum Orientation
-{
-    Left = -1,
-    On,
-    Right,
-};
 
 bool areIntervalsOverlapping(std::pair<double, double> firstInterval, std::pair<double, double> secondInterval)
 {
@@ -45,6 +39,21 @@ Orientation getOrientation(const Point& point, const LineSegment& line)
     }
 
     return determinant > 0 ? Orientation::Left : Orientation::Right;
+}
+
+Point projectPointOnLine(const Point& point, const LineSegment& line, double* paramOut)
+{
+    auto lineDir = line.getDirection();
+    glm::dvec2 startPointToPoint(point.x() - line.getStartPoint().x(), point.y() - line.getStartPoint().y());
+
+    auto projectionParam = glm::dot(lineDir, startPointToPoint);
+    projectionParam = std::min(line.length(), projectionParam);
+    projectionParam = std::max(0., projectionParam);
+    if (paramOut) *paramOut = projectionParam;
+
+    glm::dvec2 projectionPoint = utility::toGLM(line.getStartPoint()) + projectionParam * lineDir;
+
+    return utility::toPoint(projectionPoint);
 }
 
 LineSegment::LineSegment(const Point& startPoint, const Point& endPoint)

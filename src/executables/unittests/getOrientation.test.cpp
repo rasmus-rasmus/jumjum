@@ -5,12 +5,11 @@
 #include <glm/mat2x2.hpp>
 
 #include "primitives/linesegment.hpp"
-#include "primitives/linesegment.cpp"
 
 TEST_CASE("getOrientation") 
 {
     /*
-        Simple test. Buid some lines with start points in every quadrant with end points in eight equi-distributed directions from start points.
+        Simple test. Build some lines with start points in every quadrant with end points in eight equi-distributed directions from start points.
         Then take test points in a 3x5 grid around the line (with 3 interior points of grid lying on the line) and test their orientation.
     */
    

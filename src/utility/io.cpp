@@ -10,7 +10,7 @@ fs::path getProjectRootPath(int loopGuard)
 {
   // Set working dir to project root.
   auto currPath = std::filesystem::current_path();
-  while (!std::filesystem::exists(currPath / "src/") && loopGuard)
+  while (!std::filesystem::exists(currPath / "README.md") && loopGuard)
   {
     currPath = currPath.parent_path();
     --loopGuard;

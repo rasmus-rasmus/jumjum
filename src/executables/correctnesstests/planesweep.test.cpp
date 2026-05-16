@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
 using namespace algorithms;
 
@@ -41,11 +42,13 @@ TEST_CASE("planesweep::perform - general case")
   // Set working dir to project root.
   auto currPath = std::filesystem::current_path();
   int infiniteLoopGuard = 10;
-  while (!std::filesystem::exists(currPath / "src/") && infiniteLoopGuard) 
+  while (!std::filesystem::exists(currPath / "README.md") && infiniteLoopGuard) 
   {
     currPath = currPath.parent_path();
     --infiniteLoopGuard;
   }
+
+  std::cout << "CURRENT PATH: " << std::filesystem::current_path() << std::endl;
 
   // Read data from test file. Test file found on the interweb.
   std::ifstream file(currPath / "src/executables/testdata/lines.txt");

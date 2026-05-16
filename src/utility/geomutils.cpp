@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "primitives/linesegment.hpp"
+
 namespace utility
 {
 
